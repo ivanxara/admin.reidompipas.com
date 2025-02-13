@@ -109,7 +109,7 @@ export function AppSidebar({ ...props }) {
                 label="reidompipas.com"
               />
               <SidebarLink
-                href="https://admin-reidompipas-lbd3lplts-ivanxaraas-projects.vercel.app/"
+                href="https://admin-reidompipas-com.vercel.app/"
                 icon={ArrowUpRight}
                 label="admin.reidompipas.com"
               />
