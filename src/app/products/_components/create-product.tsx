@@ -27,18 +27,24 @@ import ProductFields from "./product-fields";
 
 interface CreateProductProps {
   onSuccess: () => void;
+  product?: Product | null;
 }
 
 export default function CreateProduct({
   onSuccess,
+  product,
   ...props
 }: CreateProductProps & DialogProps) {
   const form = useForm<ProductProps>({
     mode: "onChange",
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: "",
-      desc: "",
+      name: product?.name || "",
+      desc: product?.desc || "",
+      price: product?.price || undefined,
+      price2: product?.price2 || undefined,
+      categoryId: product?.categoryId || undefined,
+      tagId: product?.tagId || undefined,
     },
   });
 

@@ -12,11 +12,11 @@ import { useGlobalStore } from "@/store/global";
 import { DataTable } from "@/components/data-table/data-table";
 import UpdateProduct from "./_components/update-product";
 import DeleteProduct from "./_components/delete-product";
-import { DataTablePagination } from "@/components/data-table/data-table-pagination";
 import { useDataTable } from "@/hooks/use-data-table";
 import { Button } from "@/components/ui/button";
 import { CirclePlus } from "lucide-react";
 import CreateProduct from "./_components/create-product";
+import axios from "axios";
 
 const filterFields: DataTableFilterField<any>[] = [
   {
@@ -27,7 +27,7 @@ const filterFields: DataTableFilterField<any>[] = [
 ];
 
 export default function Page() {
-  const { menus } = useGlobalStore();
+  const { menus, categories, tags } = useGlobalStore();
 
   const queryProducts = useQuery({
     queryKey: ["products"],

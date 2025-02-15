@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import React, { useEffect } from "react";
+import React from "react";
 
 import {
   Drawer,
@@ -24,17 +24,8 @@ import { DialogProps } from "@radix-ui/react-dialog";
 import { toast } from "sonner";
 import ButtonLoading from "@/components/ui/button-loading";
 import ProductFields from "./product-fields";
-
-const formSchema = z.object({
-  name: z.string().min(3, "O nome é obrigatório"),
-  price: z.coerce.number(),
-  price2: z.coerce.number(),
-  categoryId: z.coerce.number(),
-  desc: z.string().optional(),
-  tagId: z.coerce.number().nullable(),
-});
-
-type FormData = z.infer<typeof formSchema>;
+import { useGlobalStore } from "@/store/global";
+import { ProductProps, productSchema } from "@/types/products";
 
 interface UpdateProduct {
   product: Product | null;
@@ -46,17 +37,21 @@ export default function UpdateProduct({
   onSuccess,
   ...props
 }: UpdateProduct & DialogProps) {
-  const form = useForm<FormData>({
+  const form = useForm<ProductProps>({
     mode: "onChange",
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(productSchema),
     defaultValues: {
       name: product?.name || "",
       desc: product?.desc || "",
+      price: product?.price || undefined,
+      price2: product?.price2 || undefined,
+      categoryId: product?.categoryId || undefined,
+      tagId: product?.tagId || undefined,
     },
   });
 
   const mutationUpdateProduct = useMutation({
-    mutationFn: async (values: FormData) => {
+    mutationFn: async (values: ProductProps) => {
       if (!product) throw Error("Error, no product selected");
 
       const { error } = await supabase
@@ -75,7 +70,7 @@ export default function UpdateProduct({
     },
   });
 
-  const onSubmit = async (values: FormData) => {
+  const onSubmit = async (values: ProductProps) => {
     mutationUpdateProduct.mutate(values);
   };
 

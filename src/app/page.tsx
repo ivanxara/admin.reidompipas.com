@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getColumns } from "./columns";
 import React from "react";
 import { DataTable } from "@/components/data-table/data-table";
+import VoiceRecognition from "@/components/voice-recognition";
 
 function sortDishesByFrequency(dailyHistoryArray: any) {
   const dishCount: Record<string, { name: string; count: number }> = {};
@@ -50,10 +51,9 @@ export default function Page() {
     data: queryDailyHistory.data || [],
   });
 
-  console.log(queryDailyHistory.data);
-
   return (
     <MainContainer breadcrumbs={[{ label: "Home", current: true }]}>
+      <VoiceRecognition />
       <div className="flex flex-1 flex-col gap-4">
         <DataTable table={table} />
       </div>
