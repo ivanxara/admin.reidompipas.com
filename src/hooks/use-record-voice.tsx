@@ -57,9 +57,15 @@ export const useRecordVoice = ({ onStopRecording }: useRecordVoiceProps) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      navigator?.mediaDevices
-        ?.getUserMedia({ audio: true })
-        ?.then(initialMediaRecorder);
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then(initialMediaRecorder)
+        .catch((err) => {
+          console.error("Error accessing media devices:", err);
+          toast.error(
+            "Failed to access audio device. Please check permissions."
+          );
+        });
     }
   }, []);
 
