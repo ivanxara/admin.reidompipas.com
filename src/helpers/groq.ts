@@ -20,8 +20,6 @@ export const GroqTranslate = async (file: File) => {
       temperature: 0.0,
     });
     await unlink(filePath);
-    console.log(transcription.text);
-    
     return { data: transcription.text, error: null };
   } catch (error) {
     console.log("Error transcribing audio:", error);
@@ -29,15 +27,7 @@ export const GroqTranslate = async (file: File) => {
   }
 };
 
-export const callGroq = async ({
-  data,
-  prompt,
-}: {
-  data: object;
-  prompt: string;
-}) => {
-  console.log({ prompt });
-
+export const callGroq = async (prompt: string, data?: object) => {
   try {
     const chatCompletion = await groq.chat.completions.create({
       messages: [

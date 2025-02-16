@@ -1,7 +1,12 @@
 import { GroqTranslate } from "@/helpers/groq";
 import { useEffect, useState, useRef } from "react";
+import { toast } from "sonner";
 
-export const useRecordVoice = () => {
+interface useRecordVoiceProps {
+  onStopRecording: (text: any) => Promise<void>;
+}
+
+export const useRecordVoice = ({ onStopRecording }: useRecordVoiceProps) => {
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
   );
@@ -9,6 +14,7 @@ export const useRecordVoice = () => {
   const chunks = useRef<Blob[]>([]);
 
   const startRecording = () => {
+    toast.success("start");
     if (mediaRecorder) {
       mediaRecorder.start();
       setRecording(true);
@@ -16,6 +22,7 @@ export const useRecordVoice = () => {
   };
 
   const stopRecording = async () => {
+    toast.error("stop");
     if (!mediaRecorder) return;
     mediaRecorder.stop();
     setRecording(false);
@@ -38,7 +45,7 @@ export const useRecordVoice = () => {
         type: "audio/wav",
       });
       const { data: text } = await GroqTranslate(audioFile);
-      console.log(text);
+      await onStopRecording(text);
     };
 
     setMediaRecorder(mediaRecorder);
@@ -47,8 +54,8 @@ export const useRecordVoice = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       navigator?.mediaDevices
-        .getUserMedia({ audio: true })
-        .then(initialMediaRecorder);
+        ?.getUserMedia({ audio: true })
+        ?.then(initialMediaRecorder);
     }
   }, []);
 
