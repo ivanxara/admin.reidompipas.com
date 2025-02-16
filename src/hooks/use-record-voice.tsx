@@ -40,12 +40,16 @@ export const useRecordVoice = ({ onStopRecording }: useRecordVoiceProps) => {
     };
 
     mediaRecorder.onstop = async () => {
-      const audioBlob = new Blob(chunks.current, { type: "audio/wav" });
-      const audioFile = new File([audioBlob], "recorded_audio.wav", {
-        type: "audio/wav",
-      });
-      const { data: text } = await GroqTranslate(audioFile);
-      await onStopRecording(text);
+      try {
+        const audioBlob = new Blob(chunks.current, { type: "audio/wav" });
+        const audioFile = new File([audioBlob], "recorded_audio.wav", {
+          type: "audio/wav",
+        });
+        const { data: text } = await GroqTranslate(audioFile);
+        await onStopRecording(text);
+      } catch (err: any) {
+        toast.error("mediaRecorder.onstop", err.toString());
+      }
     };
 
     setMediaRecorder(mediaRecorder);

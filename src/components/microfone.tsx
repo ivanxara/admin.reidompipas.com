@@ -8,6 +8,7 @@ import { useState } from "react";
 import CreateProduct from "@/app/products/_components/create-product";
 import { supabase } from "@/utils/supabase/client";
 import { callGroq } from "@/helpers/groq";
+import { toast } from "sonner";
 
 export default function Microphone() {
   const { categories, tags } = useGlobalStore();
@@ -15,17 +16,20 @@ export default function Microphone() {
 
   const getAction = async (prompt: string) => {
     console.log({ prompt });
+    try {
+      const { data: products } = await supabase
+        .from("products")
+        .select("id, name");
 
-    const { data: products } = await supabase
-      .from("products")
-      .select("id, name");
-
-    const { data, error } = await callGroq(prompt, {
-      categories,
-      tags,
-      products,
-    });
-    setRowAction({ type: "create", row: data });
+      const { data, error } = await callGroq(prompt, {
+        categories,
+        tags,
+        products,
+      });
+      setRowAction({ type: "create", row: data });
+    } catch (err: any) {
+      toast.error("getAction", err.toString());
+    }
   };
 
   const { recording, startRecording, stopRecording } = useRecordVoice({
