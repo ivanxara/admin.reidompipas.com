@@ -1,8 +1,33 @@
 "use server";
 
+import { writeFile, unlink } from "fs/promises";
+import fs from "fs";
+import path from "path";
 import Groq from "groq-sdk";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+export const GroqTranslate = async (file: File) => {
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const filePath = path.join("/tmp", "audio.wav");
+    await writeFile(filePath, buffer);
+    const transcription = await groq.audio.transcriptions.create({
+      file: fs.createReadStream(filePath),
+      model: "whisper-large-v3-turbo",
+      response_format: "json",
+      language: "pt",
+      temperature: 0.0,
+    });
+    await unlink(filePath);
+    console.log(transcription.text);
+    
+    return { data: transcription.text, error: null };
+  } catch (error) {
+    console.log("Error transcribing audio:", error);
+    return { data: null, error: "Error processing audio" };
+  }
+};
 
 export const callGroq = async ({
   data,
@@ -18,20 +43,29 @@ export const callGroq = async ({
       messages: [
         {
           role: "system",
-          content: `Você receberá um texto contendo informações para a criação de um prato de comida português para um restaurante. Sua tarefa é transformar esse texto em um JSON seguindo o formato do 'JSON Exemplo'. 
+          content: `Você receberá um texto contendo informações para a criação de um prato de comida português para um restaurante. Sua tarefa é transformar esse texto em um JSON seguindo o formato do 'JSON Exemplo', O campo "product" representará o prato principal com seus detalhes, enquanto o campo "similar" conterá uma lista de produtos que possuem nomes parecidos com o do prato principal, você pode encontrar o dados existentes nos dados da base de dados dentro do objecto 'projects'.
 
 
           JSON Exemplo:
           {
-            "name": z.string(),
-            "price": z.coerce.number(),
-            "price2": z.coerce.number().optional(),
-            "desc": z.string().optional(),
-            "categoryId": z.coerce.number(), // foreign key (table categories)
-            "tagId": z.coerce.number().nullable() // foreign key (table tags)
+            "product": {
+              "name": z.string(),
+              "price": z.coerce.number(),
+              "price2": z.coerce.number().optional(),
+              "desc": z.string().optional(),
+              "categoryId": z.coerce.number(), // foreign key (table categories)
+              "tagId": z.coerce.number().nullable() // foreign key (table tags)
+            },
+            "similar": z.array(
+              z.object({
+                "id": z.number(),
+                "name": z.string()
+              })
+            )
           }
 
-          Regras:
+
+          Regras do 'product':
           
           1 - O campo 'name', é obrigatorio, vai ser sempre fornecido e é o nome do prato, se o nome estiver estranho ou mal escrito verifique nomes de pratos portugueses e utilize o nome correto, o nome do restaurante é "Rei Dom Pipas" e alguns pratos podem conter o texto "Dom" ou "Rei", ter atenção porque esses textos podem estar mal escritos na prompt enviada.
 

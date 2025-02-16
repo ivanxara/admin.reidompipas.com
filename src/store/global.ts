@@ -8,6 +8,8 @@ type GlobalState = {
   getCategories: any;
   tags: Tag[];
   getTags: any;
+  products: Product[] | any;
+  getProducts: any;
 };
 
 export const useGlobalStore = create<GlobalState>((set) => ({
@@ -48,5 +50,16 @@ export const useGlobalStore = create<GlobalState>((set) => ({
     } else {
       set({ tags: data || [] });
     }
+  },
+  products: [],
+  getProducts: async () => {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*, categories(*), newMenus(menuId, menus(name))")
+      .order("id", { ascending: false });
+
+    if (error) {
+      console.log("Error fetching products", error);
+    } else set({ products: data || [] });
   },
 }));
