@@ -51,6 +51,8 @@ export default function Page() {
     data: queryDailyHistory.data || [],
   });
 
+  
+
   return (
     <MainContainer breadcrumbs={[{ label: "Home", current: true }]}>
       <Microphone />
