@@ -39,6 +39,10 @@ export default function Page() {
         console.log("Formatted Data:", formatted);
 
         const { data: message, error: err } = await callGroq2(formatted);
+        console.log(JSON.stringify(formatted));
+
+        console.log({ message });
+
         if (err) throw err;
 
         return message || "";

@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 import Groq from "groq-sdk";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY2 });
 
 export const GroqTranslate = async (file: File) => {
   try {
@@ -128,7 +128,7 @@ Um array de objetos representando pratos de comida portuguesa. Exemplo:
 ]
 \`\`\`
 
-## Regras (não omitir nenhuma):
+Regras a cumprir:
 
 1. Título: Mensagem variada diariamente, curta, animada, para o ser enviada todos os dias de manhã a clientes, com emoji's, sem formatação especial.
 
@@ -137,36 +137,40 @@ Um array de objetos representando pratos de comida portuguesa. Exemplo:
   - 🔹️ para category = "Peixe".
   - 🔸️ para category = "Carnes", everyday = false, special = false.
   - ▪️ para category = "Carnes", everyday = true.
+  - 🔺️ ( deixar vazio )
+  - 🍰 ( deixar vazio )
 
 3. Todos os pratos do array enviado devem ser listados, sem falta.
 
 4. Limite de caracteres: A mensagem/resultado final não pode ultrapassar 160 caracteres.
 
-
-5. Substituições, o texto deve ser sempre alterado mesmo que tenha outras palavras, analise 1 por 1 para não faltar nada:
-    - "Hambúrguer" retirar o texto e alterar para o emoji "🍔".
-    - Substituir texto, com, por "c/".
-    - Substituir texto, churrasco, por "churr.".
-    - Substituir texto, Maminha grelhada, por "Maminha".
-    - Substituir texto, Tiras de barriga, por "Tiras".
-    - Substituir texto, Bacalhau, por "Bac.".
-    - Substituir texto, Posta de Alcatra grelhada, por "Posta de Alcatra".
+5. Substituições: o texto deve ser sempre modificado, independentemente de conter outras palavras. Analise cada item individualmente para garantir que nada seja omitido:
+    - Substituir sempre o texto, Hambúrguer, por o emoji "🍔".
+    - Substituir sempre o texto, com, por "c/".
+    - Substituir sempre o texto, churrasco, por "churr.".
+    - Substituir sempre o texto, Maminha grelhada, por "Maminha".
+    - Substituir sempre o texto, Tiras de barriga, por "Tiras".
+    - Substituir sempre o texto, Bacalhau, por "Bac.".
+    - Substituir sempre o texto, Posta de Alcatra grelhada, por "Posta de Alcatra".
 
 6. Abreviações:
     - Faça algumas abreviações a pratos portugueses que façam sentido.
     - Pode utiliar a regra 5. como referência e aplique a mesma lógica para outros pratos similares.
 
-7. Deixar vazio:
-   - os grupos '🔺️' e '🍰' não deve alterar.
+7. Não alterar:
+    - os grupos '🔺️' e '🍰' não deve ser alterador de qualquer forma.
+    - mantenha exatamente igual ao exemplo, "Exemplo de Formato Esperado"
 
 8. Ordem dos Grupos: 
     - 🔸️
     - ▪️
     - 🔹️
     - 💎
+    - 🔺️
+    - 🍰
 
-## Exemplo de Formato Esperado:
-\`\`\`javascript
+O Resultado final deve ser identico ao "Exemplo de Formato Esperado":
+\`\`\`
 [titulo]
 
 🔸️Prato X
@@ -194,6 +198,8 @@ Um array de objetos representando pratos de comida portuguesa. Exemplo:
 
 Retorna apenas a mensagem formatada conforme as regras, sem explicações adicionais.
 `;
+    console.log(prompt);
+
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         {
@@ -213,10 +219,11 @@ Retorna apenas a mensagem formatada conforme as regras, sem explicações adicio
       stream: false,
       stop: null,
     });
+    console.log(chatCompletion?.choices);
 
     return {
       error: null,
-      data: chatCompletion.choices[0].message.content,
+      data: chatCompletion?.choices?.[0].message.content,
     };
   } catch (err) {
     const errorMessage =
