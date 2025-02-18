@@ -108,3 +108,115 @@ export const callGroq = async (prompt: string, data?: object) => {
     return { error: errorMessage, data: null };
   }
 };
+
+export const callGroq2 = async (products: any) => {
+  try {
+    const prompt = `
+Gera uma mensagem diária para SMS com máximo de 160 caracteres para um restaurante em português de Portugal, animada e convidativa, pronta para envio de manhã.
+
+## Entrada:
+Um array de objetos representando pratos de comida portuguesa. Exemplo:
+\`\`\`json
+[
+  {
+    "id": 289,
+    "name": "Salteado de esparguete c/frango",
+    "category": "Carnes",
+    "everyday": false,
+    "special": false
+  }
+]
+\`\`\`
+
+## Regras (não omitir nenhuma):
+
+1. Título: Mensagem variada diariamente, curta, animada, para o ser enviada todos os dias de manhã a clientes, com emoji's, sem formatação especial.
+
+2. Estrutura dos pratos:
+  - 💎 para special = true.
+  - 🔹️ para category = "Peixe".
+  - 🔸️ para category = "Carnes", everyday = false, special = false.
+  - ▪️ para category = "Carnes", everyday = true.
+
+4. Todos os pratos do array enviado devem ser listados, sem falta.
+
+4. Limite de caracteres: A mensagem/resultado final não pode ultrapassar 160 caracteres.
+
+5. Abreviações:
+    - o texto "com" sempre "c/".
+    - o texto "Maminha grelhada" sempre "Maminha".
+    - o texto "Tiras de barriga" posso ser só "Tiras".
+    - o texto "Bacalhau" alterar sempre para "Bac.".
+    - Substituir o texto "Posta de Alcatra grelhada" alterar sempre para "Posta".
+    - Substituir a palavra 'Hambúrguer' por '🍔'
+    - utilize os exemplos acima e faça o mesmo para o resto dos pratos.
+
+6. Grupos vazios:
+   - Não incluir pratos para os grupos com emojis '🔺️' e '🍰'.
+
+4. Ordem dos Grupos: 
+    - 🔸️
+    - ▪️
+    - 🔹️
+    - 💎
+
+## Exemplo de Formato Esperado:
+\`\`\`javascript
+[titulo]
+
+🔸️Prato X
+🔸️Prato X
+🔸️Prato X
+...
+
+▪️Prato X
+▪️Prato X
+...
+
+🔹️Prato X
+🔹️Prato X
+...
+
+💎Prato X
+💎Prato X
+...
+
+🔺️
+🔺️
+
+🍰
+\`\`\`
+
+Retorna apenas a mensagem formatada conforme as regras, sem explicações adicionais.
+`;
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: prompt,
+        },
+        {
+          role: "user",
+          content: `Array de pratos ${JSON.stringify(products)}`,
+        },
+      ],
+      // model: "llama-3.1-8b-instant",
+      model: "Llama3-70b-8192",
+      temperature: 1,
+      max_completion_tokens: 1024,
+      top_p: 1,
+      stream: false,
+      stop: null,
+    });
+
+    return {
+      error: null,
+      data: chatCompletion.choices[0].message.content,
+    };
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error ? err.message : "Unknown error occurred";
+    console.log({ errorMessage });
+    return { error: errorMessage, data: null };
+  }
+};

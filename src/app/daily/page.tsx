@@ -12,7 +12,7 @@ import { DataTable } from "@/components/data-table/data-table";
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
 import { useDataTable } from "@/hooks/use-data-table";
 import { Button } from "@/components/ui/button";
-import { CirclePlus, Instagram } from "lucide-react";
+import { CirclePlus, Instagram, Send } from "lucide-react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { getColumns } from "./_components/columns";
@@ -80,11 +80,13 @@ export default function Page() {
       <div className="w-full space-y-2.5 overflow-auto">
         <DataTableToolbar table={table} filterFields={filterFields}>
           <Link href="daily/instagram-story">
-            <Button
-              onClick={() => setRowAction({ type: "create" })}
-              size="icon"
-            >
+            <Button size="icon">
               <InstagramLogoIcon />
+            </Button>
+          </Link>
+          <Link href="daily/send-messages">
+            <Button size="icon">
+              <Send />
             </Button>
           </Link>
         </DataTableToolbar>
