@@ -138,23 +138,28 @@ Um array de objetos representando pratos de comida portuguesa. Exemplo:
   - 🔸️ para category = "Carnes", everyday = false, special = false.
   - ▪️ para category = "Carnes", everyday = true.
 
-4. Todos os pratos do array enviado devem ser listados, sem falta.
+3. Todos os pratos do array enviado devem ser listados, sem falta.
 
 4. Limite de caracteres: A mensagem/resultado final não pode ultrapassar 160 caracteres.
 
-5. Abreviações:
-    - o texto "com" sempre "c/".
-    - o texto "Maminha grelhada" sempre "Maminha".
-    - o texto "Tiras de barriga" posso ser só "Tiras".
-    - o texto "Bacalhau" alterar sempre para "Bac.".
-    - Substituir o texto "Posta de Alcatra grelhada" alterar sempre para "Posta".
-    - Substituir a palavra 'Hambúrguer' por '🍔'
-    - utilize os exemplos acima e faça o mesmo para o resto dos pratos.
 
-6. Grupos vazios:
-   - Não incluir pratos para os grupos com emojis '🔺️' e '🍰'.
+5. Substituições, o texto deve ser sempre alterado mesmo que tenha outras palavras, analise 1 por 1 para não faltar nada:
+    - "Hambúrguer" retirar o texto e alterar para o emoji "🍔".
+    - Substituir texto, com, por "c/".
+    - Substituir texto, churrasco, por "churr.".
+    - Substituir texto, Maminha grelhada, por "Maminha".
+    - Substituir texto, Tiras de barriga, por "Tiras".
+    - Substituir texto, Bacalhau, por "Bac.".
+    - Substituir texto, Posta de Alcatra grelhada, por "Posta de Alcatra".
 
-4. Ordem dos Grupos: 
+6. Abreviações:
+    - Faça algumas abreviações a pratos portugueses que façam sentido.
+    - Pode utiliar a regra 5. como referência e aplique a mesma lógica para outros pratos similares.
+
+7. Deixar vazio:
+   - os grupos '🔺️' e '🍰' não deve alterar.
+
+8. Ordem dos Grupos: 
     - 🔸️
     - ▪️
     - 🔹️

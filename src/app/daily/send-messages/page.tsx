@@ -71,7 +71,7 @@ export default function Page() {
         </Button>
         <Textarea
           defaultValue={queryProducts.data || ""}
-          className="h-[78dvh] max-h-full mt-4"
+          className="h-[90dvh] max-h-full mt-4"
         ></Textarea>
       </div>
     </MainContainer>
