@@ -25,25 +25,27 @@ export default function Page() {
           .eq("menuId", menuId)
           .eq("status", true);
 
-        const formatted = data?.map((el) => ({
-          id: el.products?.id,
-          special: el.special,
-          everyday: el.everyday,
-          name: el.products?.name,
-          category: el.products?.categories?.name,
-        }));
+        if (error) throw error;
 
-        console.log(formatted);
+        const formatted =
+          data?.map((el) => ({
+            id: el.products?.id,
+            special: el.special,
+            everyday: el.everyday,
+            name: el.products?.name,
+            category: el.products?.categories?.name,
+          })) || [];
+
+        console.log("Formatted Data:", formatted);
 
         const { data: message, error: err } = await callGroq2(formatted);
-        console.log({ err });
+        if (err) throw err;
 
-        return message;
+        return message || "";
       } catch (err) {
-        console.log(err);
-        console.log(err.toString());
-
-        toast.error(err.toString());
+        console.log("Error in query:", err);
+        toast.error(err?.toString());
+        return "";
       }
     },
   });
