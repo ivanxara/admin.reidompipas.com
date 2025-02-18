@@ -40,7 +40,10 @@ export default function Page() {
 
         return message;
       } catch (err) {
-        toast.error("erro");
+        console.log(err);
+        console.log(err.toString());
+
+        toast.error(err.toString());
       }
     },
   });

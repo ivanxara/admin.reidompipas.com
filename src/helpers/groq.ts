@@ -132,7 +132,7 @@ Um array de objetos representando pratos de comida portuguesa. Exemplo:
 
 1. Título: Mensagem variada diariamente, curta, animada, para o ser enviada todos os dias de manhã a clientes, com emoji's, sem formatação especial.
 
-2. Estrutura dos pratos:
+2. Estrutura dos pratos, faça por ordem:
   - 💎 para special = true.
   - 🔹️ para category = "Peixe".
   - 🔸️ para category = "Carnes", everyday = false, special = false.
