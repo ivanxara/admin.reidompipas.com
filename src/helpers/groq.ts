@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import Groq from 'groq-sdk';
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY2 });
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export const GroqTranslate = async (file: File) => {
   try {
