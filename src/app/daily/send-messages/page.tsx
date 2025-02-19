@@ -4,9 +4,10 @@ import MainContainer from '@/components/main-container';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { callGroq3 } from '@/helpers/groq';
+import { useCopy } from '@/hooks/use-copy';
 import { supabase } from '@/utils/supabase/client';
 import { useQuery } from '@tanstack/react-query';
-import { Copy } from 'lucide-react';
+import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -28,6 +29,7 @@ interface TextListItem {
 
 export default function Page() {
   const [text, setText] = useState('');
+  const { copy, copied } = useCopy();
 
   const queryDailySms = useQuery({
     queryKey: ['daily_sms'],
@@ -86,20 +88,12 @@ export default function Page() {
         { label: 'Send Messages', current: true },
       ]}
     >
-      O texto tem {text.length} caracteres 
+      <Button size="icon" className="fixed bottom-6 right-6 z-10" onClick={() => copy(text)}>
+        {copied ? <Check /> : <Copy />}
+      </Button>
       <div className="relative">
-        <Button
-          size="sm"
-          className="absolute top-6 right-6"
-          onClick={() => {
-            navigator.clipboard.writeText(text);
-            toast.success('Text copied');
-          }}
-        >
-          <Copy />
-          <span>Copy</span>
-        </Button>
-        <Textarea value={text} onChange={(e) => setText(e.target.value)} className="h-[90dvh] max-h-full mt-4" />
+        <span className="text-muted-foreground text-sm absolute top-2 right-3">{text.length}</span>
+        <Textarea value={text} onChange={(e) => setText(e.target.value)} className="h-[90dvh] max-h-full" />
       </div>
     </MainContainer>
   );

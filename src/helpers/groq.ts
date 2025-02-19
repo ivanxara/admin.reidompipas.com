@@ -263,6 +263,7 @@ export const callGroq3 = async (userPrompt: string) => {
               2.2.7 - Alterar o texto "queijo e fiambre" por "queijo/fiambre".
               2.2.7 - Alterar o texto "Costeletas" por "Cost."....
             2.3 - Não repita nomes.
+            2.4 - Se for nomes de pratos muito especificos, não apague totalmente a palavra mas adicione um "." a meio do texto.
           
           o resultado final deve ser um JSON com este formato: 
           {
