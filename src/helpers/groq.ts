@@ -259,7 +259,7 @@ export const callGroq3 = async (userPrompt: string) => {
               2.2.6 - Alterar o texto "Tiras de barriga" por "Tiras".
               2.2.7 - Alterar o texto "Bacalhau" por "Bac."....
               2.2.7 - Alterar o texto "queijo e fiambre" por "queijo/fiambre".
-              2.2.7 - Alterar o texto "Costeletas" por "Cost."
+              2.2.7 - Alterar o texto "Costeletas" por "Cost." ( mantanha o resto do texto )
             2.3 - Não repita nomes.
           
           o resultado final deve ser um JSON com este formato: 
@@ -276,7 +276,8 @@ export const callGroq3 = async (userPrompt: string) => {
           content: userPrompt,
         },
       ],
-      model: 'llama-3.3-70b-versatile',
+      // model: 'llama-3.3-70b-versatile',
+      model: 'llama-3.1-8b-instant',
       temperature: 1,
       max_completion_tokens: 1024,
       top_p: 1,

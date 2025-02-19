@@ -7,7 +7,7 @@ import { callGroq3 } from '@/helpers/groq';
 import { useCopy } from '@/hooks/use-copy';
 import { supabase } from '@/utils/supabase/client';
 import { useQuery } from '@tanstack/react-query';
-import { Check, Copy } from 'lucide-react';
+import { Check, Copy, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -88,6 +88,11 @@ export default function Page() {
         { label: 'Send Messages', current: true },
       ]}
     >
+      {queryDailySms.isPending && (
+        <div className="fixed h-full w-full flex items-center justify-center bg-background/50">
+          <Loader2 className="animate-spin size-10" />
+        </div>
+      )}
       <div className="w-full flex justify-end">
         <Button size="icon" onClick={() => copy(text)}>
           {copied ? <Check /> : <Copy />}
