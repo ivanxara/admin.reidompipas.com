@@ -1,29 +1,29 @@
-"use server";
+'use server';
 
-import { writeFile, unlink } from "fs/promises";
-import fs from "fs";
-import path from "path";
-import Groq from "groq-sdk";
+import { writeFile, unlink } from 'fs/promises';
+import fs from 'fs';
+import path from 'path';
+import Groq from 'groq-sdk';
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY2 });
 
 export const GroqTranslate = async (file: File) => {
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
-    const filePath = path.join("/tmp", "audio.wav");
+    const filePath = path.join('/tmp', 'audio.wav');
     await writeFile(filePath, buffer);
     const transcription = await groq.audio.transcriptions.create({
       file: fs.createReadStream(filePath),
-      model: "whisper-large-v3-turbo",
-      response_format: "json",
-      language: "pt",
+      model: 'whisper-large-v3-turbo',
+      response_format: 'json',
+      language: 'pt',
       temperature: 0.0,
     });
     await unlink(filePath);
     return { data: transcription.text, error: null };
   } catch (error) {
-    console.log("Error transcribing audio:", error);
-    return { data: null, error: "Error processing audio" };
+    console.log('Error transcribing audio:', error);
+    return { data: null, error: 'Error processing audio' };
   }
 };
 
@@ -32,7 +32,7 @@ export const callGroq = async (prompt: string, data?: object) => {
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         {
-          role: "system",
+          role: 'system',
           content: `Você receberá um texto contendo informações para a criação de um prato de comida português para um restaurante. Sua tarefa é transformar esse texto em um JSON seguindo o formato do 'JSON Exemplo', O campo "product" representará o prato principal com seus detalhes, enquanto o campo "similar" conterá uma lista de produtos que possuem nomes parecidos com o do prato principal, você pode encontrar o dados existentes nos dados da base de dados dentro do objecto 'projects'.
 
 
@@ -74,22 +74,22 @@ export const callGroq = async (prompt: string, data?: object) => {
           `,
         },
         {
-          role: "user",
+          role: 'user',
           content: prompt,
         },
         {
-          role: "assistant",
+          role: 'assistant',
           content:
             '{\n   "name": "Robalo Grelhado",\n   "price": 15,\n   "price2": 17,\n   "categoryId": 1,\n   "desc": "",\n   "tagId": null\n}',
         },
       ],
-      model: "llama-3.3-70b-versatile",
+      model: 'llama-3.3-70b-versatile',
       temperature: 1,
       max_completion_tokens: 1024,
       top_p: 1,
       stream: false,
       response_format: {
-        type: "json_object",
+        type: 'json_object',
       },
       stop: null,
     });
@@ -102,8 +102,7 @@ export const callGroq = async (prompt: string, data?: object) => {
       data: result,
     };
   } catch (err) {
-    const errorMessage =
-      err instanceof Error ? err.message : "Unknown error occurred";
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
     console.log({ errorMessage });
     return { error: errorMessage, data: null };
   }
@@ -203,16 +202,16 @@ Retorna apenas a mensagem formatada conforme as regras, sem explicações adicio
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         {
-          role: "system",
+          role: 'system',
           content: prompt,
         },
         {
-          role: "user",
+          role: 'user',
           content: `Array de pratos ${JSON.stringify(products)}`,
         },
       ],
       // model: "llama-3.1-8b-instant",
-      model: "Llama3-70b-8192",
+      model: 'Llama3-70b-8192',
       temperature: 1,
       max_completion_tokens: 1024,
       top_p: 1,
@@ -226,8 +225,7 @@ Retorna apenas a mensagem formatada conforme as regras, sem explicações adicio
       data: chatCompletion?.choices?.[0].message.content,
     };
   } catch (err) {
-    const errorMessage =
-      err instanceof Error ? err.message : "Unknown error occurred";
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
     console.log({ errorMessage });
     return { error: errorMessage, data: null };
   }
@@ -238,7 +236,7 @@ export const callGroq3 = async (userPrompt: string) => {
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         {
-          role: "system",
+          role: 'system',
           content: `
 
           Contexto: Restaurante Português Portugal
@@ -252,7 +250,7 @@ export const callGroq3 = async (userPrompt: string) => {
 
           2 - Voce irá receber um array de pratos de comida portugueses, preciso que você abrevie o nome de todos os pratos possiveis, procurando a melhor solução para reduzir o nome do prato e retornar um array JSON do mesmo formato.
             2.1 - Altere apenas a chave "name" nunca altere as outras chaves do objecto.
-            2.2 - Utilize estes exemplos e faça novas abreviações com outras palavras:
+            2.2 - Utilize estes exemplos e faça novas abreviações com outras palavras, se utilizar algum dos exemplos abaixo altere só a palavra entre "" mas mantenha o resto do nome igual, ou tente reduzir essas palavras:
               2.2.1 - Alterar o texto "Posta de Alcatra grelhada" por "Posta de Alcatra".
               2.2.2 - Alterar o texto "Hambúrguer", por o emoji "🍔".
               2.2.3 - Alterar o texto "com" por "c/".
@@ -261,9 +259,8 @@ export const callGroq3 = async (userPrompt: string) => {
               2.2.6 - Alterar o texto "Tiras de barriga" por "Tiras".
               2.2.7 - Alterar o texto "Bacalhau" por "Bac."....
               2.2.7 - Alterar o texto "queijo e fiambre" por "queijo/fiambre".
-              2.2.7 - Alterar o texto "Costeletas" por "Cost."....
+              2.2.7 - Alterar o texto "Costeletas" por "Cost."
             2.3 - Não repita nomes.
-            2.4 - Se for nomes de pratos muito especificos, não apague totalmente a palavra mas adicione um "." a meio do texto.
           
           o resultado final deve ser um JSON com este formato: 
           {
@@ -275,17 +272,17 @@ export const callGroq3 = async (userPrompt: string) => {
           `,
         },
         {
-          role: "user",
+          role: 'user',
           content: userPrompt,
         },
       ],
-      model: "llama-3.3-70b-versatile",
+      model: 'llama-3.3-70b-versatile',
       temperature: 1,
       max_completion_tokens: 1024,
       top_p: 1,
       stream: false,
       response_format: {
-        type: "json_object",
+        type: 'json_object',
       },
       stop: null,
     });
@@ -298,8 +295,7 @@ export const callGroq3 = async (userPrompt: string) => {
       data: result,
     };
   } catch (err) {
-    const errorMessage =
-      err instanceof Error ? err.message : "Unknown error occurred";
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
     console.log({ errorMessage });
     return { error: errorMessage, data: null };
   }

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,20 +8,20 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+} from '@/components/ui/breadcrumb';
+import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
-import { Moon, MoonIcon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
+import { Moon, MoonIcon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 
 interface BreadcrumbItem {
   label: string;
@@ -34,10 +34,7 @@ interface MainContainerProps {
   breadcrumbs?: BreadcrumbItem[];
 }
 
-export default function MainContainer({
-  children,
-  breadcrumbs = [],
-}: MainContainerProps) {
+export default function MainContainer({ children, breadcrumbs = [] }: MainContainerProps) {
   const { theme, setTheme } = useTheme();
 
   return (
@@ -52,16 +49,12 @@ export default function MainContainer({
                 <React.Fragment key={index}>
                   <BreadcrumbItem>
                     {item.href ? (
-                      <BreadcrumbLink href={item.href}>
-                        {item.label}
-                      </BreadcrumbLink>
+                      <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
                     ) : (
                       <BreadcrumbPage>{item.label}</BreadcrumbPage>
                     )}
                   </BreadcrumbItem>
-                  {index < breadcrumbs.length - 1 && (
-                    <BreadcrumbSeparator className="hidden md:block" />
-                  )}
+                  {index < breadcrumbs.length - 1 && <BreadcrumbSeparator className="hidden md:block" />}
                 </React.Fragment>
               ))}
             </BreadcrumbList>
@@ -71,9 +64,7 @@ export default function MainContainer({
               className="size-8"
               variant="ghost"
               size="icon"
-              onClick={() =>
-                theme === "light" ? setTheme("dark") : setTheme("light")
-              }
+              onClick={() => (theme === 'light' ? setTheme('dark') : setTheme('light'))}
             >
               <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -81,7 +72,7 @@ export default function MainContainer({
           </div>
         </div>
       </header>
-      <div className="p-4">{children}</div>
+      <div className="p-4 space-y-4 w-full h-full">{children}</div>
     </div>
   );
 }

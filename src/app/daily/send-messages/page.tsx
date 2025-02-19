@@ -88,9 +88,11 @@ export default function Page() {
         { label: 'Send Messages', current: true },
       ]}
     >
-      <Button size="icon" className="fixed bottom-6 right-6 z-10" onClick={() => copy(text)}>
-        {copied ? <Check /> : <Copy />}
-      </Button>
+      <div className="w-full flex justify-end">
+        <Button size="icon" onClick={() => copy(text)}>
+          {copied ? <Check /> : <Copy />}
+        </Button>
+      </div>
       <div className="relative">
         <span className="text-muted-foreground text-sm absolute top-2 right-3">{text.length}</span>
         <Textarea value={text} onChange={(e) => setText(e.target.value)} className="h-[90dvh] max-h-full" />
