@@ -145,13 +145,13 @@ Regras a cumprir:
 4. Limite de caracteres: A mensagem/resultado final não pode ultrapassar 160 caracteres.
 
 5. Substituições: o texto deve ser sempre modificado, independentemente de conter outras palavras. Analise cada item individualmente para garantir que nada seja omitido:
-    - Substituir sempre o texto, Hambúrguer, por o emoji "🍔".
-    - Substituir sempre o texto, com, por "c/".
-    - Substituir sempre o texto, churrasco, por "churr.".
-    - Substituir sempre o texto, Maminha grelhada, por "Maminha".
-    - Substituir sempre o texto, Tiras de barriga, por "Tiras".
-    - Substituir sempre o texto, Bacalhau, por "Bac.".
-    - Substituir sempre o texto, Posta de Alcatra grelhada, por "Posta de Alcatra".
+    - Alterar o texto "Hambúrguer, por o emoji "🍔".
+    - Alterar o texto "com, por "c/".
+    - Alterar o texto "churrasco, por "churr.".
+    - Alterar o texto "Maminha grelhada, por "Maminha".
+    - Alterar o texto "Tiras de barriga, por "Tiras".
+    - Alterar o texto "Bacalhau, por "Bac.".
+    - Alterar o texto "Posta de Alcatra grelhada, por "Posta de Alcatra".
 
 6. Abreviações:
     - Faça algumas abreviações a pratos portugueses que façam sentido.
@@ -224,6 +224,77 @@ Retorna apenas a mensagem formatada conforme as regras, sem explicações adicio
     return {
       error: null,
       data: chatCompletion?.choices?.[0].message.content,
+    };
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error ? err.message : "Unknown error occurred";
+    console.log({ errorMessage });
+    return { error: errorMessage, data: null };
+  }
+};
+
+export const callGroq3 = async (userPrompt: string) => {
+  try {
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: `
+
+          Contexto: Restaurante Português Portugal
+          
+          1 - Pequeno titulo diário variado e animado para enviar o menu diario aos clientes, utilize sempre um emoji feliz.
+            1.1 - Utilize estes exemplos e crie um titulo novo:
+              1.1.1 - 😊 Bom dia!
+              1.1.2 - Bom dia! 🌞
+              1.1.3 - Menu do Dia 🤩
+              1.1.4 - BOM DIA E C/ BOAS ENERGIAS😀✨️
+
+          2 - Voce irá receber um array de pratos de comida portugueses, preciso que você abrevie o nome de todos os pratos possiveis, procurando a melhor solução para reduzir o nome do prato e retornar um array JSON do mesmo formato.
+            2.1 - Altere apenas a chave "name" nunca altere as outras chaves do objecto.
+            2.2 - Utilize estes exemplos e faça novas abreviações com outras palavras:
+              2.2.1 - Alterar o texto "Posta de Alcatra grelhada" por "Posta de Alcatra".
+              2.2.2 - Alterar o texto "Hambúrguer", por o emoji "🍔".
+              2.2.3 - Alterar o texto "com" por "c/".
+              2.2.4 - Alterar o texto "churrasco" por "churr.".
+              2.2.5 - Alterar o texto "Maminha grelhada" por "Maminha".
+              2.2.6 - Alterar o texto "Tiras de barriga" por "Tiras".
+              2.2.7 - Alterar o texto "Bacalhau" por "Bac."....
+              2.2.7 - Alterar o texto "queijo e fiambre" por "queijo/fiambre".
+              2.2.7 - Alterar o texto "Costeletas" por "Cost."....
+            2.3 - Não repita nomes.
+          
+          o resultado final deve ser um JSON com este formato: 
+          {
+            label: "", 
+            items: []
+          } 
+
+          PS: Todos os nomes/titulos devem estar em Português de Portugal.
+          `,
+        },
+        {
+          role: "user",
+          content: userPrompt,
+        },
+      ],
+      model: "llama-3.3-70b-versatile",
+      temperature: 1,
+      max_completion_tokens: 1024,
+      top_p: 1,
+      stream: false,
+      response_format: {
+        type: "json_object",
+      },
+      stop: null,
+    });
+
+    let result = chatCompletion?.choices[0]?.message?.content;
+    if (result) result = JSON.parse(result);
+
+    return {
+      error: null,
+      data: result,
     };
   } catch (err) {
     const errorMessage =

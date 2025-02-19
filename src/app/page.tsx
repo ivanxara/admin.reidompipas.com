@@ -53,7 +53,7 @@ export default function Page() {
 
   return (
     <MainContainer breadcrumbs={[{ label: "Home", current: true }]}>
-      <Microphone />
+      {/* <Microphone /> */}
       <div className="flex flex-1 flex-col gap-4">
         <DataTable table={table} />
       </div>

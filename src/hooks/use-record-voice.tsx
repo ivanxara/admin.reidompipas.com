@@ -14,7 +14,8 @@ export const useRecordVoice = ({ onStopRecording }: useRecordVoiceProps) => {
   const chunks = useRef<Blob[]>([]);
 
   const startRecording = () => {
-    toast.success("start");
+    console.log({ mediaRecorder });
+
     if (mediaRecorder) {
       mediaRecorder.start();
       setRecording(true);
@@ -22,7 +23,6 @@ export const useRecordVoice = ({ onStopRecording }: useRecordVoiceProps) => {
   };
 
   const stopRecording = async () => {
-    toast.error("stop");
     if (!mediaRecorder) return;
     mediaRecorder.stop();
     setRecording(false);
@@ -57,8 +57,8 @@ export const useRecordVoice = ({ onStopRecording }: useRecordVoiceProps) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      navigator.mediaDevices
-        .getUserMedia({ audio: true })
+      navigator?.mediaDevices
+        ?.getUserMedia({ audio: true })
         .then(initialMediaRecorder)
         .catch((err) => {
           console.error("Error accessing media devices:", err);

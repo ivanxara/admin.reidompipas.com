@@ -1,55 +1,80 @@
-"use client";
+'use client';
 
-import MainContainer from "@/components/main-container";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { callGroq2 } from "@/helpers/groq";
-import { arr } from "@/utils/generic";
-import { supabase } from "@/utils/supabase/client";
-import { useQuery } from "@tanstack/react-query";
-import { Copy } from "lucide-react";
-import React, { useEffect } from "react";
-import { toast } from "sonner";
+import MainContainer from '@/components/main-container';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { callGroq3 } from '@/helpers/groq';
+import { supabase } from '@/utils/supabase/client';
+import { useQuery } from '@tanstack/react-query';
+import { Copy } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 const menuId = 1;
+
+interface Product {
+  id: number;
+  name: string;
+  category: string;
+  special: boolean;
+  everyday: boolean;
+}
+
+interface TextListItem {
+  emoji: string;
+  filter?: (item: Product) => boolean;
+  items?: { name: string }[];
+}
+
 export default function Page() {
-  const queryProducts = useQuery({
-    queryKey: ["daily"],
+  const [text, setText] = useState('');
+
+  const queryDailySms = useQuery({
+    queryKey: ['daily_sms'],
     queryFn: async () => {
       try {
         const { data, error } = await supabase
-          .from("newMenus")
-          .select(
-            "id, everyday, special, products(id, name, categories(id, name))"
-          )
-          .eq("menuId", menuId)
-          .eq("status", true);
-
+          .from('newMenus')
+          .select('id, everyday, special, products(id, name, categories(id, name))')
+          .eq('menuId', menuId)
+          .eq('status', true);
         if (error) throw error;
 
-        const formatted =
-          data?.map((el) => ({
-            id: el.products?.id,
-            special: el.special,
-            everyday: el.everyday,
-            name: el.products?.name,
-            category: el.products?.categories?.name,
+        const formattedData: Product[] =
+          data?.map(({ products, special, everyday }) => ({
+            id: products?.id ?? 0,
+            name: products?.name ?? '',
+            category: products?.categories?.name ?? '',
+            special: special ?? false,
+            everyday: everyday ?? false,
           })) || [];
 
-        console.log("Formatted Data:", formatted);
+        console.log(formattedData);
 
-        const { data: message, error: err } = await callGroq2(formatted);
-        console.log(JSON.stringify(formatted));
-
-        console.log({ message });
-
+        const { data: dataAI, error: err } = (await callGroq3(JSON.stringify(formattedData))) as any;
         if (err) throw err;
 
-        return message || "";
+        const textList: TextListItem[] = [
+          { emoji: '🔸️', filter: (item) => item.category === 'Carnes' && !item.everyday && !item.special },
+          { emoji: '▪️', filter: (item) => item.category === 'Carnes' && item.everyday },
+          { emoji: '🔹️', filter: (item) => item.category === 'Peixe' && !item.special },
+          { emoji: '💎', filter: (item) => item.special },
+          { emoji: '🔺️', items: [{ name: '' }, { name: '' }] },
+          { emoji: '🍰', items: [{ name: '' }] },
+        ];
+
+        const newText = textList
+          .map(({ emoji, filter, items }) =>
+            (items ?? dataAI?.items.filter(filter!)).map((item: any) => `${emoji}${item.name}`).join('\n'),
+          )
+          .join('\n\n');
+
+        setText(`${dataAI?.label}\n\n${newText}`);
+        return newText;
       } catch (err) {
-        console.log("Error in query:", err);
-        toast.error(err?.toString());
-        return "";
+        console.error('Error in query:', err);
+        toast.error('error');
+        return '';
       }
     },
   });
@@ -57,26 +82,24 @@ export default function Page() {
   return (
     <MainContainer
       breadcrumbs={[
-        { label: "Daily", href: "/daily" },
-        { label: "Send Messages", current: true },
+        { label: 'Daily', href: '/daily' },
+        { label: 'Send Messages', current: true },
       ]}
     >
+      O texto tem {text.length} caracteres 
       <div className="relative">
         <Button
           size="sm"
           className="absolute top-6 right-6"
           onClick={() => {
-            navigator.clipboard.writeText(queryProducts?.data || "");
-            toast.success("Text copied");
+            navigator.clipboard.writeText(text);
+            toast.success('Text copied');
           }}
         >
           <Copy />
           <span>Copy</span>
         </Button>
-        <Textarea
-          defaultValue={queryProducts.data || ""}
-          className="h-[90dvh] max-h-full mt-4"
-        ></Textarea>
+        <Textarea value={text} onChange={(e) => setText(e.target.value)} className="h-[90dvh] max-h-full mt-4" />
       </div>
     </MainContainer>
   );
