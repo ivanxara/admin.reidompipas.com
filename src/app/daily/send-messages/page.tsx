@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { callGroq3 } from '@/helpers/groq';
 import { useCopy } from '@/hooks/use-copy';
+import { cn } from '@/lib/utils';
 import { supabase } from '@/utils/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { Check, Copy, Loader2 } from 'lucide-react';
@@ -53,12 +54,19 @@ export default function Page() {
 
         console.log(formattedData);
 
-        const { data: dataAI, error: err } = (await callGroq3(JSON.stringify(formattedData))) as any;
+        const { data: dataAI, error: err } = (await callGroq3(
+          JSON.stringify(formattedData),
+        )) as any;
         if (err) throw err;
 
         const textList: TextListItem[] = [
-          { emoji: '🔸️', filter: (item) => item.category === 'Carnes' && !item.everyday && !item.special },
+          {
+            emoji: '🔸️',
+            filter: (item) =>
+              item.category === 'Carnes' && !item.everyday && !item.special,
+          },
           { emoji: '▪️', filter: (item) => item.category === 'Carnes' && item.everyday },
+          { emoji: '🥬', filter: (item) => item.category === 'Vegetariano/Vegan' },
           { emoji: '🔹️', filter: (item) => item.category === 'Peixe' && !item.special },
           { emoji: '💎', filter: (item) => item.special },
           { emoji: '🔺️', items: [{ name: '' }, { name: '' }] },
@@ -67,7 +75,9 @@ export default function Page() {
 
         const newText = textList
           .map(({ emoji, filter, items }) =>
-            (items ?? dataAI?.items.filter(filter!)).map((item: any) => `${emoji}${item.name}`).join('\n'),
+            (items ?? dataAI?.items.filter(filter!))
+              .map((item: any) => `${emoji}${item.name}`)
+              .join('\n'),
           )
           .join('\n\n');
 
@@ -89,7 +99,7 @@ export default function Page() {
       ]}
     >
       {queryDailySms.isPending && (
-        <div className="fixed h-full w-full flex items-center justify-center bg-background/50">
+        <div className="fixed left-0 top-0 h-full w-full flex items-center justify-center bg-background/50">
           <Loader2 className="animate-spin size-10" />
         </div>
       )}
@@ -99,8 +109,19 @@ export default function Page() {
         </Button>
       </div>
       <div className="relative">
-        <span className="text-muted-foreground text-sm absolute top-2 right-3">{text.length}</span>
-        <Textarea value={text} onChange={(e) => setText(e.target.value)} className="h-[90dvh] max-h-full" />
+        <span
+          className={cn(
+            'text-muted-foreground text-sm absolute top-5 right-5',
+            text.length > 333 && 'text-red-400',
+          )}
+        >
+          {text.length}
+        </span>
+        <Textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          className="h-[90dvh] max-h-full"
+        />
       </div>
     </MainContainer>
   );

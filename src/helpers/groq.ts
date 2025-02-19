@@ -242,25 +242,26 @@ export const callGroq3 = async (userPrompt: string) => {
           Contexto: Restaurante Português Portugal
           
           1 - Pequeno titulo diário variado e animado para enviar o menu diario aos clientes, utilize sempre um emoji feliz.
-            1.1 - Utilize estes exemplos e crie um titulo novo:
+            1.1 - Utilize estes exemplos e generate um titulo novo:
               1.1.1 - 😊 Bom dia!
               1.1.2 - Bom dia! 🌞
               1.1.3 - Menu do Dia 🤩
-              1.1.4 - BOM DIA E C/ BOAS ENERGIAS😀✨️
 
           2 - Voce irá receber um array de pratos de comida portugueses, preciso que você abrevie o nome de todos os pratos possiveis, procurando a melhor solução para reduzir o nome do prato e retornar um array JSON do mesmo formato.
             2.1 - Altere apenas a chave "name" nunca altere as outras chaves do objecto.
-            2.2 - Utilize estes exemplos e faça novas abreviações com outras palavras, se utilizar algum dos exemplos abaixo altere só a palavra entre "" mas mantenha o resto do nome igual, ou tente reduzir essas palavras:
-              2.2.1 - Alterar o texto "Posta de Alcatra grelhada" por "Posta de Alcatra".
-              2.2.2 - Alterar o texto "Hambúrguer", por o emoji "🍔".
+            2.2 - Utilize estes exemplos e faça novas abreviações:
+              2.2.1 - Alterar o texto "Posta de Alcatra grelhada" por "Posta Alcatra".
+              2.2.2 - Alterar o texto "Hambúrguer", por o emoji de um hamburguer "🍔".
               2.2.3 - Alterar o texto "com" por "c/".
               2.2.4 - Alterar o texto "churrasco" por "churr.".
               2.2.5 - Alterar o texto "Maminha grelhada" por "Maminha".
               2.2.6 - Alterar o texto "Tiras de barriga" por "Tiras".
               2.2.7 - Alterar o texto "Bacalhau" por "Bac."....
-              2.2.7 - Alterar o texto "queijo e fiambre" por "queijo/fiambre".
+              2.2.7 - Alterar o texto "... e ..." por ".../....".
               2.2.7 - Alterar o texto "Costeletas" por "Cost." ( mantanha o resto do texto )
-            2.3 - Não repita nomes.
+
+          4 - O maximo de caracteres no final não pode ultrapassar os 280, rever nomes dos pratos de comida 1 a 1 e ver se algum pode ser reduzido com uma abreviação ou corte na palavra.     
+        
           
           o resultado final deve ser um JSON com este formato: 
           {
