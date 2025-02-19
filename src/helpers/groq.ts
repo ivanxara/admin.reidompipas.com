@@ -253,14 +253,14 @@ export const callGroq3 = async (userPrompt: string) => {
               2.2.1 - Alterar o texto "Posta de Alcatra grelhada" por "Posta Alcatra".
               2.2.2 - Alterar o texto "Hambúrguer", por o emoji de um hamburguer "🍔".
               2.2.3 - Alterar o texto "com" por "c/".
-              2.2.4 - Alterar o texto "churrasco" por "churr.".
+              2.2.4 - Alterar o texto "Frango de churrasco" por "churrasco".
               2.2.5 - Alterar o texto "Maminha grelhada" por "Maminha".
               2.2.6 - Alterar o texto "Tiras de barriga" por "Tiras".
               2.2.7 - Alterar o texto "Bacalhau" por "Bac."....
               2.2.7 - Alterar o texto "... e ..." por ".../....".
               2.2.7 - Alterar o texto "Costeletas" por "Cost." ( mantanha o resto do texto )
 
-          4 - O maximo de caracteres no final não pode ultrapassar os 280, rever nomes dos pratos de comida 1 a 1 e ver se algum pode ser reduzido com uma abreviação ou corte na palavra.     
+          4 - O maximo de caracteres no final não pode ultrapassar os 295, rever nomes dos pratos de comida 1 a 1 e ver se algum pode ser reduzido com uma abreviação ou corte na palavra.     
         
           
           o resultado final deve ser um JSON com este formato: 
@@ -277,8 +277,8 @@ export const callGroq3 = async (userPrompt: string) => {
           content: userPrompt,
         },
       ],
-      // model: 'llama-3.3-70b-versatile',
-      model: 'llama-3.1-8b-instant',
+      model: 'llama-3.3-70b-versatile',
+      // model: 'llama-3.1-8b-instant',
       temperature: 1,
       max_completion_tokens: 1024,
       top_p: 1,
