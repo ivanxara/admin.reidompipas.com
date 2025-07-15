@@ -109,6 +109,8 @@ export const callGroq = async (prompt: string, data?: object) => {
 };
 
 export const callGroq2 = async (products: any) => {
+  console.log("groq 2");
+  
   try {
     const prompt = `
 Gera uma mensagem diária para SMS com máximo de 160 caracteres para um restaurante em português de Portugal, animada e convidativa, pronta para envio de manhã.
@@ -232,6 +234,8 @@ Retorna apenas a mensagem formatada conforme as regras, sem explicações adicio
 };
 
 export const callGroq3 = async (userPrompt: string) => {
+  console.log('groq 3');
+
   try {
     const chatCompletion = await groq.chat.completions.create({
       messages: [

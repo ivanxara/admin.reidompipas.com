@@ -52,7 +52,7 @@ export default function Page() {
             everyday: everyday ?? false,
           })) || [];
 
-        console.log(formattedData);
+        console.log({ formattedData });
 
         const { data: dataAI, error: err } = (await callGroq3(
           JSON.stringify(formattedData),
@@ -66,7 +66,11 @@ export default function Page() {
               item.category === 'Carnes' && !item.everyday && !item.special,
           },
           { emoji: '▪️', filter: (item) => item.category === 'Carnes' && item.everyday },
-          { emoji: '🥬', filter: (item) => item.category === 'Vegetariano/Vegan' },
+          {
+            emoji: '🥬',
+            filter: (item) =>
+              item.category === 'Vegetariano/Vegan' || item.category === 'Saladas',
+          },
           { emoji: '🔹️', filter: (item) => item.category === 'Peixe' && !item.special },
           { emoji: '💎', filter: (item) => item.special },
           { emoji: '🔺️', items: [{ name: '' }, { name: '' }] },
