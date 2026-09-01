@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://admin.reidompipas.com"
+      "url": "https://admin-reidompipas-com-v2.vercel.app"
     }
   ],
   "paths": {
