@@ -15,7 +15,7 @@
       "post": {
         "operationId": "updateMenuItem",
         "summary": "Pré-visualizar ou atualizar pratos do menu",
-        "description": "Interprete linguagem natural, incluindo pequenas diferenças, erros de escrita e transcrições de voz. Se forem detetados dois ou mais pratos, trate todos numa única pré-visualização e peça uma confirmação conjunta. Use confirmed false primeiro. Apresente: 'Vou alterar:\n\n- Nome do prato\n  - Preço Antigo: 12 € -> Preço novo: 15 €'. Se um prato não for encontrado, o nome for ambíguo, ou houver qualquer dúvida ou contradição, não execute alterações: explique o problema e peça ao utilizador para esclarecer. Depois da confirmação explícita, repita com confirmed true. Use active para Active; special e everyday só funcionam no menu daily.",
+        "description": "Use confirmed false para pré-visualizar. Confirme todas as alterações de 2+ pratos numa lista. Se houver dúvida, ambiguidade ou prato não encontrado, peça esclarecimento e não atualize. Após confirmação, repita com confirmed true. Use active para Active; special e everyday só no daily.",
         "x-openai-isConsequential": true,
         "requestBody": {
           "required": true,
