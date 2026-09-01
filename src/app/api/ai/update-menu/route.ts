@@ -72,6 +72,30 @@ function normalizeName(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
 
+function levenshteinDistance(left: string, right: string) {
+  const distances = Array.from({ length: right.length + 1 }, (_, index) => index);
+
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    let previousDiagonal = distances[0];
+    distances[0] = leftIndex;
+
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const previous = distances[rightIndex];
+      distances[rightIndex] = left[leftIndex - 1] === right[rightIndex - 1]
+        ? previousDiagonal
+        : Math.min(previousDiagonal, distances[rightIndex], distances[rightIndex - 1]) + 1;
+      previousDiagonal = previous;
+    }
+  }
+
+  return distances[right.length];
+}
+
+function wordSimilarity(left: string, right: string) {
+  const distance = levenshteinDistance(left, right);
+  return 1 - distance / Math.max(left.length, right.length);
+}
+
 function matchProduct(products: Product[], requestedName: string) {
   const normalizedRequest = normalizeName(requestedName);
   const scored = products
@@ -80,8 +104,12 @@ function matchProduct(products: Product[], requestedName: string) {
       const normalizedProduct = normalizeName(product.name);
       const requestWords = new Set(normalizedRequest.split(" "));
       const productWords = new Set(normalizedProduct.split(" "));
-      const commonWords = [...requestWords].filter((word) => productWords.has(word));
-      const wordScore = commonWords.length / Math.max(requestWords.size, productWords.size);
+      const wordScore = [...requestWords].reduce((total, requestWord) => {
+        const bestWordScore = Math.max(
+          ...[...productWords].map((productWord) => wordSimilarity(requestWord, productWord))
+        );
+        return total + (bestWordScore >= 0.75 ? bestWordScore : 0);
+      }, 0) / Math.max(requestWords.size, productWords.size);
       const score = normalizedProduct === normalizedRequest
         ? 1
         : normalizedProduct.includes(normalizedRequest) || normalizedRequest.includes(normalizedProduct)
