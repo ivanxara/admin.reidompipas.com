@@ -1,0 +1,185 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Restaurant Menu API",
+    "description": "Atualiza vários pratos do menu por nome ou ID. A Action deve pedir confirmação explícita ao utilizador antes de executar esta operação.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://admin.reidompipas.com"
+    }
+  ],
+  "paths": {
+    "/api/ai/update-menu": {
+      "post": {
+        "operationId": "updateMenuItem",
+        "summary": "Atualizar item do menu",
+        "description": "Antes de chamar esta operação, apresente ao utilizador um resumo com todos os pratos, preços e estados que serão alterados e peça confirmação explícita. Só execute depois de o utilizador confirmar.",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenuRequest"
+              },
+              "examples": {
+                "updatePrice": {
+                  "summary": "Alterar preço",
+                  "value": {
+                    "confirmed": true,
+                    "updates": [
+                      {
+                        "productName": "Bacalhau a Bras",
+                        "price": 14.5
+                      },
+                      {
+                        "productName": "Arroz de marisco",
+                        "status": false
+                      }
+                    ]
+                  }
+                },
+                "toggleAvailability": {
+                  "summary": "Alterar disponibilidade",
+                  "value": {
+                    "confirmed": true,
+                    "updates": [
+                      {
+                        "itemId": 123,
+                        "status": false
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Pedido inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item do menu não encontrado"
+          },
+          "409": {
+            "description": "Nome do prato ambíguo"
+          },
+          "500": {
+            "description": "Erro ao atualizar a base de dados"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdateMenuRequest": {
+        "type": "object",
+        "required": [
+          "confirmed",
+          "updates"
+        ],
+        "properties": {
+          "confirmed": {
+            "type": "boolean",
+            "const": true,
+            "description": "Deve ser true apenas depois da confirmação explícita do utilizador."
+          },
+          "updates": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "items": {
+              "$ref": "#/components/schemas/MenuUpdate"
+            },
+            "description": "Lista de pratos a atualizar."
+          }
+        },
+        "additionalProperties": false
+      },
+      "MenuUpdate": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID da linha do item em newMenus."
+          },
+          "productName": {
+            "type": "string",
+            "description": "Nome do prato; pode ser aproximado do nome guardado na base de dados."
+          },
+          "price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Novo preço do produto."
+          },
+          "status": {
+            "type": "boolean",
+            "description": "Estado de disponibilidade do item."
+          }
+        },
+        "anyOf": [
+          { "required": ["itemId"] },
+          { "required": ["productName"] }
+        ],
+        "additionalProperties": false
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": false
+          },
+          "message": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}
