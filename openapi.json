@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Restaurant Menu API",
-    "description": "Atualiza vários pratos do menu por nome ou ID. A Action deve pedir confirmação explícita ao utilizador antes de executar esta operação.",
+    "description": "Pré-visualiza e atualiza vários pratos do menu Daily ou Menu/Carta por nome ou ID.",
     "version": "1.0.0"
   },
   "servers": [
@@ -14,8 +14,8 @@
     "/api/ai/update-menu": {
       "post": {
         "operationId": "updateMenuItem",
-        "summary": "Atualizar item do menu",
-        "description": "Antes de chamar esta operação, apresente ao utilizador um resumo com todos os pratos, preços e estados que serão alterados e peça confirmação explícita. Só execute depois de o utilizador confirmar.",
+        "summary": "Pré-visualizar ou atualizar pratos do menu",
+        "description": "Interprete linguagem natural, incluindo pequenas diferenças, erros de escrita e transcrições de voz. Se forem detetados dois ou mais pratos, trate todos numa única pré-visualização e peça uma confirmação conjunta. Use confirmed false primeiro. Apresente: 'Vou alterar:\n\n- Nome do prato\n  - Preço Antigo: 12 € -> Preço novo: 15 €'. Se um prato não for encontrado, o nome for ambíguo, ou houver qualquer dúvida ou contradição, não execute alterações: explique o problema e peça ao utilizador para esclarecer. Depois da confirmação explícita, repita com confirmed true. Use active para Active; special e everyday só funcionam no menu daily.",
         "x-openai-isConsequential": true,
         "requestBody": {
           "required": true,
@@ -28,7 +28,8 @@
                 "updatePrice": {
                   "summary": "Alterar preço",
                   "value": {
-                    "confirmed": true,
+                    "confirmed": false,
+                    "menu": "daily",
                     "updates": [
                       {
                         "productName": "Bacalhau a Bras",
@@ -36,7 +37,9 @@
                       },
                       {
                         "productName": "Arroz de marisco",
-                        "status": false
+                        "active": false,
+                        "special": true,
+                        "everyday": false
                       }
                     ]
                   }
@@ -44,11 +47,12 @@
                 "toggleAvailability": {
                   "summary": "Alterar disponibilidade",
                   "value": {
-                    "confirmed": true,
+                    "confirmed": false,
+                    "menu": "menu",
                     "updates": [
                       {
                         "itemId": 123,
-                        "status": false
+                        "active": false
                       }
                     ]
                   }
@@ -63,7 +67,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/PreviewResponse" },
+                    { "$ref": "#/components/schemas/SuccessResponse" }
+                  ]
                 }
               }
             }
@@ -79,10 +86,10 @@
             }
           },
           "404": {
-            "description": "Item do menu não encontrado"
+            "description": "Um ou mais pratos não foram encontrados. Não executar alterações; pedir esclarecimento ao utilizador."
           },
           "409": {
-            "description": "Nome do prato ambíguo"
+            "description": "Nome de prato ambíguo ou pedido inconsistente. Não executar alterações; pedir esclarecimento ao utilizador."
           },
           "500": {
             "description": "Erro ao atualizar a base de dados"
@@ -97,13 +104,18 @@
         "type": "object",
         "required": [
           "confirmed",
+          "menu",
           "updates"
         ],
         "properties": {
           "confirmed": {
             "type": "boolean",
-            "const": true,
-            "description": "Deve ser true apenas depois da confirmação explícita do utilizador."
+            "description": "false para pré-visualizar os valores atuais; true apenas depois da confirmação explícita do utilizador."
+          },
+          "menu": {
+            "type": "string",
+            "enum": ["daily", "menu"],
+            "description": "daily para o menu de diárias; menu para Menu/Carta."
           },
           "updates": {
             "type": "array",
@@ -134,9 +146,17 @@
             "minimum": 0,
             "description": "Novo preço do produto."
           },
-          "status": {
+          "active": {
             "type": "boolean",
-            "description": "Estado de disponibilidade do item."
+            "description": "Estado Active: mostrar ou não o prato no menu selecionado."
+          },
+          "special": {
+            "type": "boolean",
+            "description": "Estado Special, apenas no menu daily."
+          },
+          "everyday": {
+            "type": "boolean",
+            "description": "Estado Everyday, apenas no menu daily."
           }
         },
         "anyOf": [
@@ -144,6 +164,32 @@
           { "required": ["productName"] }
         ],
         "additionalProperties": false
+      },
+      "PreviewResponse": {
+        "type": "object",
+        "required": ["success", "confirmed", "message", "updates"],
+        "properties": {
+          "success": { "type": "boolean", "const": true },
+          "confirmed": { "type": "boolean", "const": false },
+          "message": { "type": "string" },
+          "updates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productName": { "type": "string" },
+                "currentPrice": { "type": ["number", "null"] },
+                "newPrice": { "type": ["number", "null"] },
+                "currentStatus": { "type": ["boolean", "null"] },
+                "newActive": { "type": ["boolean", "null"] },
+                "currentSpecial": { "type": ["boolean", "null"] },
+                "newSpecial": { "type": ["boolean", "null"] },
+                "currentEveryday": { "type": ["boolean", "null"] },
+                "newEveryday": { "type": ["boolean", "null"] }
+              }
+            }
+          }
+        }
       },
       "SuccessResponse": {
         "type": "object",
