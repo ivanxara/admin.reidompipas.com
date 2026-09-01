@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/server";
 
 const updateMenuSchema = z.object({
   confirmed: z.boolean(),
@@ -112,7 +112,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, message: "Dados inválidos", errors: result.error.flatten().fieldErrors }, { status: 400 });
   }
 
-  const supabase = await createClient();
+  let supabase: ReturnType<typeof createAdminClient>;
+  try {
+    supabase = createAdminClient();
+  } catch {
+    return jsonError("A integração com a base de dados não está configurada", 503);
+  }
+
   try {
     const [{ data: products, error: productsError }, { data: menuItems, error: menuItemsError }] = await Promise.all([
       supabase.from("products").select("id, name, price"),

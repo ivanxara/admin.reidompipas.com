@@ -16,7 +16,6 @@
         "operationId": "updateMenuItem",
         "summary": "Pré-visualizar ou atualizar pratos do menu",
         "description": "Use confirmed false para pré-visualizar. Confirme todas as alterações de 2+ pratos numa lista. Se houver dúvida, ambiguidade ou prato não encontrado, peça esclarecimento e não atualize. Após confirmação, repita com confirmed true. Use active para Active; special e everyday só no daily.",
-        "x-openai-isConsequential": true,
         "requestBody": {
           "required": true,
           "content": {
