@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Rei Dom Pipas — Daily Menu",
-    "description": "Devolve os pratos ativos das diárias. O GPT usa esta informação para redigir a mensagem diária para clientes.",
+    "description": "Devolve os pratos ativos das diárias. O GPT deve formatá-los como texto simples: sem cabeçalhos de categorias, sem bullets, sem estrelas e com um emoji diretamente antes de cada prato.",
     "version": "1.0.0"
   },
   "servers": [
@@ -15,7 +15,7 @@
       "get": {
         "operationId": "getDailyMenuForMessage",
         "summary": "Obter os pratos ativos das diárias",
-        "description": "Use esta ação quando o utilizador pedir para criar, ver ou atualizar a mensagem das diárias. Esta ação é apenas de leitura e não altera o menu.",
+        "description": "Chame esta ação quando o utilizador pedir para criar, ver, refazer ou atualizar a mensagem das diárias, incluindo pedidos como 'manda-me'. Depois, responda apenas com a mensagem final em texto simples. Não use cabeçalhos como Carnes ou Peixe, bullets, estrelas, explicações ou despedidas. Formate cada prato sem espaço como EMOJINome: 🔸️ para Carnes não everyday e não special; ▪️ para Carnes everyday não special; 🥬 para Vegetariano/Vegan ou Saladas não special; 🔹️ para Peixe não special; 💎 para qualquer special. Separe grupos com uma linha vazia e termine sempre com duas linhas 🔺️, uma linha vazia e 🍰. Máximo de 295 caracteres. Esta ação é apenas de leitura.",
         "responses": {
           "200": {
             "description": "Pratos ativos das diárias",
@@ -46,8 +46,14 @@
           "id": { "type": "integer" },
           "name": { "type": "string" },
           "category": { "type": ["string", "null"] },
-          "special": { "type": "boolean" },
-          "everyday": { "type": "boolean" }
+          "special": {
+            "type": "boolean",
+            "description": "Quando true, apresentar o prato apenas no grupo 💎; nunca usar uma estrela ⭐."
+          },
+          "everyday": {
+            "type": "boolean",
+            "description": "Quando true numa Carne não especial, apresentar no grupo ▪️."
+          }
         }
       },
       "DailyMenuResponse": {
