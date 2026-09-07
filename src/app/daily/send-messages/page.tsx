@@ -8,11 +8,13 @@ import { useCopy } from '@/hooks/use-copy';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/utils/supabase/client';
 import { useQuery } from '@tanstack/react-query';
-import { Check, Copy, Loader2 } from 'lucide-react';
+import { Check, Copy, Loader2, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 const menuId = 1;
+const dailyMessageGptUrl =
+  'https://chatgpt.com/g/g-6a9f361c23348191bd2d483292c3be95-mensagem-das-diarias';
 
 interface Product {
   id: number;
@@ -107,7 +109,13 @@ export default function Page() {
           <Loader2 className="animate-spin size-10" />
         </div>
       )}
-      <div className="w-full flex justify-end">
+      <div className="w-full flex justify-end gap-2">
+        <Button variant="outline" asChild>
+          <a href={dailyMessageGptUrl} target="_blank" rel="noopener noreferrer">
+            <MessageCircle />
+            Abrir no ChatGPT
+          </a>
+        </Button>
         <Button size="icon" onClick={() => copy(text)}>
           {copied ? <Check /> : <Copy />}
         </Button>
