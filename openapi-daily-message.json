@@ -1,0 +1,68 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Rei Dom Pipas — Daily Menu",
+    "description": "Devolve os pratos ativos das diárias. O GPT usa esta informação para redigir a mensagem diária para clientes.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://admin-reidompipas-com-v2.vercel.app"
+    }
+  ],
+  "paths": {
+    "/api/ai/daily-message": {
+      "get": {
+        "operationId": "getDailyMenuForMessage",
+        "summary": "Obter os pratos ativos das diárias",
+        "description": "Use esta ação quando o utilizador pedir para criar, ver ou atualizar a mensagem das diárias. Esta ação é apenas de leitura e não altera o menu.",
+        "responses": {
+          "200": {
+            "description": "Pratos ativos das diárias",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyMenuResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Não foi possível obter as diárias"
+          },
+          "503": {
+            "description": "Integração com a base de dados indisponível"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DailyMenuItem": {
+        "type": "object",
+        "required": ["id", "name", "category", "special", "everyday"],
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "category": { "type": ["string", "null"] },
+          "special": { "type": "boolean" },
+          "everyday": { "type": "boolean" }
+        }
+      },
+      "DailyMenuResponse": {
+        "type": "object",
+        "required": ["success", "menu", "generatedAt", "items"],
+        "properties": {
+          "success": { "type": "boolean", "const": true },
+          "menu": { "type": "string", "const": "daily" },
+          "generatedAt": { "type": "string", "format": "date-time" },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DailyMenuItem" }
+          }
+        }
+      }
+    }
+  }
+}
