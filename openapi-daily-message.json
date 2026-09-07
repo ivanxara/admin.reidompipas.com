@@ -15,7 +15,7 @@
       "get": {
         "operationId": "getDailyMenuForMessage",
         "summary": "Obter os pratos ativos das diárias",
-        "description": "Chame esta ação quando o utilizador pedir para criar, ver, refazer ou atualizar a mensagem das diárias, incluindo pedidos como 'manda-me'. Depois, responda apenas com a mensagem final em texto simples. Não use cabeçalhos como Carnes ou Peixe, bullets, estrelas, explicações ou despedidas. Formate cada prato sem espaço como EMOJINome: 🔸️ para Carnes não everyday e não special; ▪️ para Carnes everyday não special; 🥬 para Vegetariano/Vegan ou Saladas não special; 🔹️ para Peixe não special; 💎 para qualquer special. Separe grupos com uma linha vazia e termine sempre com duas linhas 🔺️, uma linha vazia e 🍰. Máximo de 295 caracteres. Esta ação é apenas de leitura.",
+        "description": "Obtém os pratos da mensagem diária. Responda só com texto simples, sem títulos, bullets ou estrelas. Use 🔸️ Carne normal; ▪️ Carne everyday; 🥬 Vegetariano/Salada; 🔹️ Peixe; 💎 special. Separe grupos com linha vazia. Termine com duas linhas 🔺️ e 🍰. Máximo: 295 caracteres.",
         "responses": {
           "200": {
             "description": "Pratos ativos das diárias",
