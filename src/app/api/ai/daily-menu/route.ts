@@ -29,6 +29,7 @@ const requestSchema = z.object({
 type Product = {
   id: number;
   name: string | null;
+  categories: { name: string | null } | null;
 };
 
 type DailyMenuRow = {
@@ -36,6 +37,8 @@ type DailyMenuRow = {
   productId: number | null;
   status: boolean | null;
   order: number | null;
+  special: boolean | null;
+  everyday: boolean | null;
 };
 
 type ResolvedChange = {
@@ -144,10 +147,10 @@ function matchProduct(products: Product[], requestedName: string) {
 async function loadMenuData(supabase: ReturnType<typeof createAdminClient>) {
   const [{ data: products, error: productsError }, { data: menuRows, error: menuRowsError }] =
     await Promise.all([
-      supabase.from("products").select("id, name").order("name"),
+      supabase.from("products").select("id, name, categories(name)").order("name"),
       supabase
         .from("newMenus")
-        .select("id, productId, status, order")
+        .select("id, productId, status, order, special, everyday")
         .eq("menuId", DAILY_MENU_ID)
         .order("order", { ascending: true, nullsFirst: false }),
     ]);
@@ -172,7 +175,13 @@ function activeProducts(products: Product[], menuRows: DailyMenuRow[]) {
     if (!product?.name) return [];
 
     seen.add(row.productId);
-    return [{ productId: product.id, productName: product.name }];
+    return [{
+      productId: product.id,
+      productName: product.name,
+      category: product.categories?.name ?? null,
+      special: row.special ?? false,
+      everyday: row.everyday ?? false,
+    }];
   });
 }
 

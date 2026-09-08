@@ -15,7 +15,7 @@
       "get": {
         "operationId": "getActiveDailyProducts",
         "summary": "Listar pratos ativos das diárias",
-        "description": "Use quando o utilizador pedir para ver as diárias ou no início através do botão Mostrar pratos ativos. É apenas de leitura.",
+        "description": "Use para mostrar as diárias. Sem título: 💎 special, 🔸️ carne normal, ▪️ everyday, 🥬 vegetariano/salada e 🔹️ peixe. Termine com 🔺️ Sopa e 🍰 Sobremesa.",
         "x-openai-isConsequential": false,
         "responses": {
           "200": {
@@ -39,7 +39,7 @@
       "post": {
         "operationId": "setDailyProductsActive",
         "summary": "Adicionar ou retirar pratos das diárias",
-        "description": "Use uma única vez, só depois de o utilizador confirmar explicitamente a lista completa. true adiciona às diárias; false retira.",
+        "description": "Use uma única vez após confirmação explícita. true adiciona e deve aparecer como ✅; false retira e deve aparecer como ❌.",
         "x-openai-isConsequential": true,
         "requestBody": {
           "required": true,
@@ -103,13 +103,25 @@
     "schemas": {
       "ActiveProduct": {
         "type": "object",
-        "required": ["productId", "productName"],
+        "required": ["productId", "productName", "category", "special", "everyday"],
         "properties": {
           "productId": {
             "type": "integer"
           },
           "productName": {
             "type": "string"
+          },
+          "category": {
+            "type": ["string", "null"],
+            "description": "Usada apenas para agrupar a apresentação."
+          },
+          "special": {
+            "type": "boolean",
+            "description": "Usado apenas para o grupo visual 💎."
+          },
+          "everyday": {
+            "type": "boolean",
+            "description": "Usado apenas para o grupo visual ▪️."
           }
         },
         "additionalProperties": false
