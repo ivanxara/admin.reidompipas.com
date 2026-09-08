@@ -8,6 +8,17 @@ import { DailyStoryImage } from "./story-image";
 export const dynamic = "force-dynamic";
 
 const DAILY_MENU_ID = 1;
+const interFonts = Promise.all([
+  fetch(
+    "https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfMZs.woff"
+  ).then((response) => response.arrayBuffer()),
+  fetch(
+    "https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuGKYMZs.woff"
+  ).then((response) => response.arrayBuffer()),
+  fetch(
+    "https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuFuYMZs.woff"
+  ).then((response) => response.arrayBuffer()),
+]);
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -59,6 +70,8 @@ export async function GET(request: Request) {
       ? "attachment"
       : "inline";
 
+    const [interRegular, interSemibold, interBold] = await interFonts;
+
     return new ImageResponse(
       DailyStoryImage({
         dateLabel: storyDate.label,
@@ -69,6 +82,11 @@ export async function GET(request: Request) {
       {
         width: 1080,
         height: 1920,
+        fonts: [
+          { name: "Inter", data: interRegular, weight: 400, style: "normal" },
+          { name: "Inter", data: interSemibold, weight: 600, style: "normal" },
+          { name: "Inter", data: interBold, weight: 700, style: "normal" },
+        ],
         headers: {
           "Cache-Control": "no-store",
           "Content-Disposition": `${disposition}; filename="${storyDate.filename}"`,

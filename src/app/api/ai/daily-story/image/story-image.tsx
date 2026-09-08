@@ -32,7 +32,7 @@ export function DailyStoryImage({
         padding: "160px 112px 220px",
         backgroundColor: colors.dark,
         color: colors.light,
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "Inter",
       }}
     >
       <div
@@ -43,6 +43,7 @@ export function DailyStoryImage({
           fontSize: 72,
           fontWeight: 700,
           lineHeight: 1,
+          letterSpacing: "-0.05em",
           textTransform: "uppercase",
           whiteSpace: "nowrap",
         }}
@@ -54,11 +55,12 @@ export function DailyStoryImage({
         style={{
           display: "flex",
           justifyContent: "center",
-          marginTop: 16,
+          marginTop: 8,
           color: colors.light,
           fontSize: 58,
           fontWeight: 700,
           lineHeight: 1,
+          letterSpacing: "-0.05em",
           whiteSpace: "nowrap",
         }}
       >
@@ -76,7 +78,12 @@ export function DailyStoryImage({
         {normalItems.map((item) => (
           <div
             key={item.id}
-            style={{ display: "flex", fontSize: 42, lineHeight: 1.2 }}
+            style={{
+              display: "flex",
+              fontSize: 42,
+              lineHeight: 1.5,
+              letterSpacing: "-0.005em",
+            }}
           >
             {item.name}
           </div>
@@ -88,10 +95,9 @@ export function DailyStoryImage({
           <div
             style={{
               display: "flex",
-              height: 2,
+              height: 1,
               margin: "48px 16px",
-              backgroundColor: colors.light,
-              opacity: 0.75,
+              backgroundColor: "hsl(12, 6.5%, 15.1%)",
             }}
           />
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -105,7 +111,9 @@ export function DailyStoryImage({
             >
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            <span style={{ fontSize: 48, fontWeight: 700 }}>Especiais</span>
+            <span style={{ fontSize: 48, fontWeight: 700, lineHeight: 1.5 }}>
+              Especiais
+            </span>
           </div>
           <div
             style={{
@@ -118,7 +126,12 @@ export function DailyStoryImage({
             {specialItems.map((item) => (
               <div
                 key={item.id}
-                style={{ display: "flex", fontSize: 42, lineHeight: 1.2 }}
+                style={{
+                  display: "flex",
+                  fontSize: 42,
+                  lineHeight: 1.5,
+                  letterSpacing: "-0.005em",
+                }}
               >
                 {item.name}
               </div>
@@ -142,10 +155,17 @@ export function DailyStoryImage({
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <span style={{ fontSize: 32, fontWeight: 600, textTransform: "uppercase" }}>
+          <span
+            style={{
+              fontSize: 32,
+              fontWeight: 600,
+              lineHeight: 1.5,
+              textTransform: "uppercase",
+            }}
+          >
             Reservas &amp; Take-away
           </span>
-          <span style={{ fontSize: 32, textTransform: "uppercase" }}>
+          <span style={{ fontSize: 32, lineHeight: 1.5, textTransform: "uppercase" }}>
             912040915 / 256386200
           </span>
         </div>
