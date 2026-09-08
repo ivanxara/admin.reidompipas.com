@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Rei Dom Pipas — Gestão das Diárias",
-    "description": "Lista e altera apenas o estado Active dos pratos do Daily Menu.",
-    "version": "2.0.0"
+    "description": "Lista, altera o estado Active e cria a imagem Instagram Story do Daily Menu.",
+    "version": "2.1.0"
   },
   "servers": [
     {
@@ -94,6 +94,44 @@
           },
           "503": {
             "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/api/ai/daily-story": {
+      "get": {
+        "operationId": "createDailyStoryImage",
+        "summary": "Criar a imagem das diárias",
+        "description": "Cria URLs de visualização e download da imagem Instagram Story 1080×1920 com os pratos ativos. Omita date para usar a data atual em Lisboa.",
+        "x-openai-isConsequential": false,
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date",
+            "required": false,
+            "description": "Data da imagem. Omitir quando o utilizador pedir hoje.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "URLs da imagem criadas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyStoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
           }
         }
       }
@@ -243,6 +281,31 @@
             "items": {
               "$ref": "#/components/schemas/ActiveProduct"
             }
+          }
+        },
+        "additionalProperties": false
+      },
+      "DailyStoryResponse": {
+        "type": "object",
+        "required": ["success", "date", "imageUrl", "downloadUrl"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL pública para apresentar a imagem no chat."
+          },
+          "downloadUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL pública para descarregar o PNG."
           }
         },
         "additionalProperties": false
