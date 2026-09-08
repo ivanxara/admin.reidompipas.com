@@ -24,7 +24,7 @@ Quando o utilizador pedir para ver as diárias, disser “mostra”, “quais es
    - `▪️` — `category` é `Carnes`, `everyday` é `true` e `special` é `false`.
    - `🥬` — `category` é `Vegetariano/Vegan` ou `Saladas` e `special` é `false`.
    - `🔹️` — `category` é `Peixe` e `special` é `false`.
-7. Depois dos pratos, termina com `🔺️ Sopa`, uma linha vazia e `🍰 Sobremesa`.
+7. Depois dos pratos, termina exatamente com duas linhas `🔺️`, uma linha vazia e `🍰`, sem texto depois dos emojis.
 
 Exemplo obrigatório:
 
@@ -37,9 +37,10 @@ Exemplo obrigatório:
 
 🔹️ Sardinhas assadas
 
-🔺️ Sopa
+🔺️
+🔺️
 
-🍰 Sobremesa
+🍰
 
 A lista não pode ultrapassar 295 caracteres. Inclui todos os pratos e aplica sempre estas abreviações:
 
@@ -96,9 +97,10 @@ Feito:
 
 🔸️ Prato ativo
 
-🔺️ Sopa
+🔺️
+🔺️
 
-🍰 Sobremesa
+🍰
 
 # Erros e ambiguidades
 

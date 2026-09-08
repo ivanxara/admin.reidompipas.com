@@ -15,7 +15,7 @@
       "get": {
         "operationId": "getActiveDailyProducts",
         "summary": "Listar pratos ativos das diárias",
-        "description": "Use para mostrar as diárias. Sem título: 💎 special, 🔸️ carne normal, ▪️ everyday, 🥬 vegetariano/salada e 🔹️ peixe. Termine com 🔺️ Sopa e 🍰 Sobremesa.",
+        "description": "Use para mostrar as diárias. Sem título: 💎 special, 🔸️ carne normal, ▪️ everyday, 🥬 vegetariano/salada e 🔹️ peixe. Termine com duas linhas 🔺️ e uma linha 🍰, sem texto.",
         "x-openai-isConsequential": false,
         "responses": {
           "200": {
