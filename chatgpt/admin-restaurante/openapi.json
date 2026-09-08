@@ -1,0 +1,306 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Rei Dom Pipas — Gestão das Diárias",
+    "description": "Lista e altera apenas o estado Active dos pratos do Daily Menu.",
+    "version": "2.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://admin-reidompipas-com-v2.vercel.app"
+    }
+  ],
+  "paths": {
+    "/api/ai/daily-menu": {
+      "get": {
+        "operationId": "getActiveDailyProducts",
+        "summary": "Listar pratos ativos das diárias",
+        "description": "Use quando o utilizador pedir para ver as diárias ou no início através do botão Mostrar pratos ativos. É apenas de leitura.",
+        "x-openai-isConsequential": false,
+        "responses": {
+          "200": {
+            "description": "Lista atual de pratos ativos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyMenuResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "setDailyProductsActive",
+        "summary": "Adicionar ou retirar pratos das diárias",
+        "description": "Use uma única vez, só depois de o utilizador confirmar explicitamente a lista completa. true adiciona às diárias; false retira.",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDailyMenuRequest"
+              },
+              "examples": {
+                "changeProducts": {
+                  "summary": "Adicionar e retirar pratos",
+                  "value": {
+                    "confirmed": true,
+                    "changes": [
+                      {
+                        "productName": "Picanha",
+                        "active": false
+                      },
+                      {
+                        "productName": "Ovos Rotos",
+                        "active": true
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Alterações aplicadas e lista ativa atualizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateDailyMenuResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActiveProduct": {
+        "type": "object",
+        "required": ["productId", "productName"],
+        "properties": {
+          "productId": {
+            "type": "integer"
+          },
+          "productName": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DailyMenuResponse": {
+        "type": "object",
+        "required": ["success", "menu", "count", "activeProducts"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true
+          },
+          "menu": {
+            "type": "string",
+            "const": "daily"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "activeProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActiveProduct"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "DailyProductChange": {
+        "type": "object",
+        "required": ["active"],
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID devolvido pela listagem. Prefira-o quando estiver disponível."
+          },
+          "productName": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Nome do prato, que pode conter um pequeno erro ortográfico."
+          },
+          "active": {
+            "type": "boolean",
+            "description": "true para adicionar às diárias; false para retirar."
+          }
+        },
+        "anyOf": [
+          {
+            "required": ["productId"]
+          },
+          {
+            "required": ["productName"]
+          }
+        ],
+        "additionalProperties": false
+      },
+      "UpdateDailyMenuRequest": {
+        "type": "object",
+        "required": ["confirmed", "changes"],
+        "properties": {
+          "confirmed": {
+            "type": "boolean",
+            "const": true,
+            "description": "Só pode ser true após confirmação explícita do utilizador."
+          },
+          "changes": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "items": {
+              "$ref": "#/components/schemas/DailyProductChange"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "AppliedChange": {
+        "type": "object",
+        "required": ["productId", "productName", "active", "previousActive", "changed"],
+        "properties": {
+          "productId": {
+            "type": "integer"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "previousActive": {
+            "type": "boolean"
+          },
+          "changed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateDailyMenuResponse": {
+        "type": "object",
+        "required": ["success", "message", "changes", "activeProducts"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true
+          },
+          "message": {
+            "type": "string"
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppliedChange"
+            }
+          },
+          "activeProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActiveProduct"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["success", "message"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": false
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {}
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Pedido inválido ou ainda não confirmado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Prato não encontrado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Nome ambíguo ou alterações contraditórias",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "Erro ao aceder ou atualizar a base de dados",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unavailable": {
+        "description": "Integração indisponível ou não configurada",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  }
+}
