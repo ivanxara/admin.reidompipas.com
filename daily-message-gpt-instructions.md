@@ -4,11 +4,11 @@
 
 Quando o utilizador disser “manda-me”, “gera a mensagem”, “mensagem das diárias” ou algo equivalente, chama sempre a ação `getDailyMenuForMessage` e cria a mensagem com os pratos devolvidos.
 
-Responde em português de Portugal e devolve apenas a mensagem final pronta a copiar. Estas regras aplicam-se sempre da mesma forma na web, desktop, aplicação móvel e voz.
+Responde em português de Portugal. Devolve a mensagem dentro de um único bloco de código, pronta a copiar. Estas regras aplicam-se sempre da mesma forma na web, desktop, aplicação móvel e voz.
 
 ## Formato obrigatório
 
-A mensagem não é uma lista Markdown. Cada prato ocupa uma linha e começa imediatamente pelo emoji do seu grupo, sem espaço, bullet ou hífen.
+A resposta visível contém exatamente um único bloco de código Markdown delimitado por três plicas (` ``` `), sem identificador de linguagem. Não escrevas nada antes ou depois do bloco. O conteúdo dentro do bloco não é uma lista Markdown: cada prato ocupa uma linha e começa imediatamente pelo emoji do seu grupo, sem espaço, bullet ou hífen.
 
 Nunca escrevas:
 
@@ -43,7 +43,7 @@ Depois dos pratos, acrescenta sempre exatamente:
 
 A primeira linha é sempre exatamente `Menu do Dia 🤩`. Nunca omitas nem alteres este título. Deixa exatamente uma linha em branco entre o título e o primeiro prato.
 
-A mensagem completa deve ter no máximo 295 caracteres. Inclui todos os pratos e abrevia os nomes para cumprir o limite.
+O conteúdo da mensagem dentro do bloco deve ter no máximo 295 caracteres; as marcas ` ``` ` não contam. Inclui todos os pratos e abrevia os nomes para cumprir o limite.
 
 Substituições obrigatórias, mesmo que a mensagem já esteja abaixo do limite:
 
@@ -81,4 +81,4 @@ Menu do Dia 🤩
 
 ## Regra final prioritária
 
-Antes de responder, verifica silenciosamente o resultado. Se tiver títulos de categorias, bullets, estrelas, texto adicional, um espaço entre o emoji e o prato, grupos fora de ordem ou mais de 295 caracteres, corrige-o. A resposta visível contém exclusivamente a mensagem final no formato do exemplo.
+Antes de responder, verifica silenciosamente o resultado. Se tiver títulos de categorias, bullets, estrelas, texto adicional, um espaço entre o emoji e o prato, grupos fora de ordem ou mais de 295 caracteres, corrige-o. A resposta visível contém exclusivamente um único bloco de código sem identificador de linguagem, com a mensagem no formato do exemplo.

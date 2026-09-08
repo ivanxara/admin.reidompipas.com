@@ -15,7 +15,7 @@
       "get": {
         "operationId": "getDailyMenuForMessage",
         "summary": "Obter os pratos ativos das diárias",
-        "description": "Obtém os pratos diários. Responda só com texto iniciado por Menu do Dia 🤩, sem títulos, bullets ou estrelas. Use 🔸️ Carne normal; ▪️ everyday; 🥬 Vegetariano/Salada; 🔹️ Peixe; 💎 special. Separe grupos por linha vazia. Termine com duas linhas 🔺️ e 🍰. Máximo 295 caracteres.",
+        "description": "Obtém os pratos diários. Responda num único bloco de código iniciado por Menu do Dia 🤩, sem texto externo, títulos, bullets ou estrelas. Emojis: 🔸️ normal; ▪️ everyday; 🥬 vegetariano/salada; 🔹️ peixe; 💎 special. Separe grupos por linha vazia. Termine com 🔺️, 🔺️ e 🍰. Máximo 295 caracteres.",
         "responses": {
           "200": {
             "description": "Pratos ativos das diárias",
