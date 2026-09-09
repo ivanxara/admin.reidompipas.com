@@ -3,7 +3,7 @@
   "info": {
     "title": "Rei Dom Pipas — Gestão das Diárias",
     "description": "Lista, altera o estado Active e cria a imagem Instagram Story do Daily Menu.",
-    "version": "2.2.0"
+    "version": "2.3.0"
   },
   "servers": [
     {
@@ -15,7 +15,7 @@
       "get": {
         "operationId": "getActiveDailyProducts",
         "summary": "Listar pratos ativos das diárias",
-        "description": "Mostre as diárias num único bloco de código, sem texto externo. Ordem: 💎 special, 🔸️ carne normal, ▪️ everyday, 🥬 vegetariano/salada e 🔹️ peixe. Termine com 🔺️, 🔺️ e 🍰 vazios.",
+        "description": "Mostre as diárias num único bloco de código, sem texto externo. Ordem: 🔸️ carne normal, ▪️ everyday, 🥬 vegetariano/salada, 🔹️ peixe e 💎 special. Termine com 🔺️, 🔺️ e 🍰 vazios.",
         "x-openai-isConsequential": false,
         "responses": {
           "200": {
@@ -102,14 +102,14 @@
       "get": {
         "operationId": "createDailyStoryImage",
         "summary": "Criar a imagem das diárias",
-        "description": "Cria a imagem 1080×1920 com ordem fixa. Envie sempre em date a data do dia seguinte em Lisboa, no formato YYYY-MM-DD.",
+        "description": "Cria a imagem 1080×1920 com ordem fixa. Use a data pedida pelo utilizador; quando não indicar uma data, envie em date o dia seguinte em Lisboa.",
         "x-openai-isConsequential": false,
         "parameters": [
           {
             "in": "query",
             "name": "date",
             "required": true,
-            "description": "Data do dia seguinte em Lisboa, no formato YYYY-MM-DD.",
+            "description": "Data-alvo em Lisboa no formato YYYY-MM-DD. Respeite datas indicadas, incluindo hoje; sem data no pedido, use o dia seguinte.",
             "schema": {
               "type": "string",
               "format": "date"
