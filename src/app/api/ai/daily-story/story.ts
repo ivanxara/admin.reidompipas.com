@@ -7,6 +7,7 @@ export type StoryMenuItem = {
   id: number;
   name: string;
   categoryId: number | null;
+  order: number | null;
   special: boolean;
   everyday: boolean;
 };
@@ -23,8 +24,19 @@ export function currentLisbonDate() {
   return `${values.year}-${values.month}-${values.day}`;
 }
 
+export function nextLisbonDate() {
+  const [year, month, day] = currentLisbonDate().split("-").map(Number);
+  const nextDate = new Date(Date.UTC(year, month - 1, day + 1));
+
+  return [
+    nextDate.getUTCFullYear(),
+    String(nextDate.getUTCMonth() + 1).padStart(2, "0"),
+    String(nextDate.getUTCDate()).padStart(2, "0"),
+  ].join("-");
+}
+
 export function parseStoryDate(value: string | null) {
-  const dateValue = value ?? currentLisbonDate();
+  const dateValue = value ?? nextLisbonDate();
   const match = DATE_PATTERN.exec(dateValue);
   if (!match) return null;
 
@@ -53,7 +65,16 @@ export function sortStoryItems(items: StoryMenuItem[]) {
     const rightPriority = right.categoryId === 14 ? 2 : right.everyday ? 1 : 0;
 
     if (leftPriority !== rightPriority) return leftPriority - rightPriority;
-    return (left.categoryId ?? Number.MAX_SAFE_INTEGER) -
+    const categoryDifference =
+      (left.categoryId ?? Number.MAX_SAFE_INTEGER) -
       (right.categoryId ?? Number.MAX_SAFE_INTEGER);
+    if (categoryDifference !== 0) return categoryDifference;
+
+    const orderDifference =
+      (left.order ?? Number.MAX_SAFE_INTEGER) -
+      (right.order ?? Number.MAX_SAFE_INTEGER);
+    if (orderDifference !== 0) return orderDifference;
+
+    return left.id - right.id;
   });
 }

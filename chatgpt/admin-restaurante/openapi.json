@@ -3,7 +3,7 @@
   "info": {
     "title": "Rei Dom Pipas — Gestão das Diárias",
     "description": "Lista, altera o estado Active e cria a imagem Instagram Story do Daily Menu.",
-    "version": "2.1.0"
+    "version": "2.2.0"
   },
   "servers": [
     {
@@ -39,7 +39,7 @@
       "post": {
         "operationId": "setDailyProductsActive",
         "summary": "Adicionar ou retirar pratos das diárias",
-        "description": "Use uma única vez após confirmação explícita. true adiciona e deve aparecer como ✅; false retira e deve aparecer como ❌.",
+        "description": "Use uma única vez após confirmação explícita. true é ✅ e false é ❌. Antes da chamada e após sucesso, mostre as alterações num bloco de código, com uma linha vazia entre pratos.",
         "x-openai-isConsequential": true,
         "requestBody": {
           "required": true,
@@ -102,14 +102,14 @@
       "get": {
         "operationId": "createDailyStoryImage",
         "summary": "Criar a imagem das diárias",
-        "description": "Cria URLs de visualização e download da imagem Instagram Story 1080×1920 com os pratos ativos. Omita date para usar a data atual em Lisboa.",
+        "description": "Cria a imagem 1080×1920 com ordem fixa. Envie sempre em date a data do dia seguinte em Lisboa, no formato YYYY-MM-DD.",
         "x-openai-isConsequential": false,
         "parameters": [
           {
             "in": "query",
             "name": "date",
-            "required": false,
-            "description": "Data da imagem. Omitir quando o utilizador pedir hoje.",
+            "required": true,
+            "description": "Data do dia seguinte em Lisboa, no formato YYYY-MM-DD.",
             "schema": {
               "type": "string",
               "format": "date"
@@ -287,7 +287,7 @@
       },
       "DailyStoryResponse": {
         "type": "object",
-        "required": ["success", "date", "imageUrl", "downloadUrl"],
+        "required": ["success", "date", "width", "height", "imageUrl", "downloadUrl"],
         "properties": {
           "success": {
             "type": "boolean",
@@ -296,6 +296,14 @@
           "date": {
             "type": "string",
             "format": "date"
+          },
+          "width": {
+            "type": "integer",
+            "const": 1080
+          },
+          "height": {
+            "type": "integer",
+            "const": 1920
           },
           "imageUrl": {
             "type": "string",

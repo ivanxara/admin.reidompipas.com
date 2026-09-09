@@ -25,6 +25,8 @@ export async function GET(request: Request) {
     {
       success: true,
       date: storyDate.value,
+      width: 1080,
+      height: 1920,
       imageUrl: imageUrl.toString(),
       downloadUrl: downloadUrl.toString(),
     },

@@ -44,9 +44,11 @@ export async function GET(request: Request) {
   try {
     const { data, error } = await supabase
       .from("newMenus")
-      .select("id, special, everyday, products(id, name, categoryId)")
+      .select("id, order, special, everyday, products(id, name, categoryId)")
       .eq("menuId", DAILY_MENU_ID)
-      .eq("status", true);
+      .eq("status", true)
+      .order("order", { ascending: true, nullsFirst: false })
+      .order("id", { ascending: true });
 
     if (error) throw error;
 
@@ -55,9 +57,10 @@ export async function GET(request: Request) {
         if (!row.products?.name) return [];
 
         return [{
-          id: row.products.id,
+          id: row.id,
           name: row.products.name,
           categoryId: row.products.categoryId,
+          order: row.order,
           special: row.special ?? false,
           everyday: row.everyday ?? false,
         } satisfies StoryMenuItem];

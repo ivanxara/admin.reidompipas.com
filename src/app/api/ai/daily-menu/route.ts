@@ -152,7 +152,8 @@ async function loadMenuData(supabase: ReturnType<typeof createAdminClient>) {
         .from("newMenus")
         .select("id, productId, status, order, special, everyday")
         .eq("menuId", DAILY_MENU_ID)
-        .order("order", { ascending: true, nullsFirst: false }),
+        .order("order", { ascending: true, nullsFirst: false })
+        .order("id", { ascending: true }),
     ]);
 
   if (productsError) throw productsError;

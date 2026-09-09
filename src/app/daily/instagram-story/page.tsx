@@ -38,7 +38,9 @@ export default function Page() {
         .from("newMenus")
         .select("*, products(*)")
         .eq("menuId", menuId)
-        .eq("status", true);
+        .eq("status", true)
+        .order("order", { ascending: true, nullsFirst: false })
+        .order("id", { ascending: true });
 
       // @ts-ignore
       const sortedProducts = data.sort((a: any, b: any) => {
@@ -54,7 +56,17 @@ export default function Page() {
           return priorityA - priorityB;
         }
 
-        return categoryIdA - categoryIdB;
+        if (categoryIdA !== categoryIdB) {
+          return categoryIdA - categoryIdB;
+        }
+
+        const orderA = a.order ?? Number.MAX_SAFE_INTEGER;
+        const orderB = b.order ?? Number.MAX_SAFE_INTEGER;
+        if (orderA !== orderB) {
+          return orderA - orderB;
+        }
+
+        return a.id - b.id;
       });
 
       return arr.groupBy(sortedProducts, "special");
@@ -150,7 +162,7 @@ export default function Page() {
       <div className="hidden">
         <div
           ref={elementRef}
-          className="overflow-hidden relative flex flex-col bg-brand-dark p-28 py-40 text-brand-light"
+          className="overflow-hidden relative flex h-[1920px] w-[1080px] flex-col bg-brand-dark p-28 py-40 text-brand-light"
         >
           <div className="absolute left-0 w-full text-brand-dark flex py-6 px-28 items-center justify-center bottom-0 bg-brand-light">
             <div className="flex flex-col">
